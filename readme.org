@@ -112,7 +112,7 @@ General configurations that used on all hosts + folders for host specific
     system = {
       autoUpgrade = {
         enable = true;
-        dates = "daily";
+        dates = "02:00";
         flake = "github:susanthenerd/dotfiles";
         allowReboot = true;
         rebootWindow = {
@@ -135,9 +135,7 @@ home-manager configs
 #+begin_src nix :tangle ./hosts/home.nix
   { config, lib, pkgs, ... }:
   { 
-    # imports =                                   # Home Manager Modules
-    #  (import ../modules/programs) ++
-    #  (import ../modules/services);
+    imports = (import ../modules/programs);
   
     home = {
       username = "susan";
@@ -166,6 +164,7 @@ home-manager configs
   
     programs = {
       home-manager.enable = true;
+      fish.enable = true;
     };
   
     # gtk = {                                     # Theming
@@ -276,6 +275,33 @@ Specific home-manager configs for my framework
 * Modules
 ** Services
 ** Programs
+
+#+begin_src nix :tangle ./modules/programs/default.nix
+  [
+    ./starship
+  ]
+#+end_src
+
+*** Starship
+#+begin_src nix :tangle ./modules/programs/starship/default.nix
+  {config, lib, pkgs, ... }:
+  {
+    programs.starship = {
+      enable = true;
+      # Configuration written to ~/.config/starship.toml
+      settings = {
+        # add_newline = false;
+  
+        # character = {
+        #   success_symbol = "[➜](bold green)";
+        #   error_symbol = "[➜](bold red)";
+        # };
+  
+        # package.disabled = true;
+      };
+    };
+  }
+#+end_src
 * Github Actions
 ** automate daily version bump
 #+begin_src yaml :tangle ./.github/workflows/auto-version-bump.yaml

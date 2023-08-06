@@ -44,7 +44,7 @@
   system = {
     autoUpgrade = {
       enable = true;
-      dates = "daily";
+      dates = "02:00";
       flake = "github:susanthenerd/dotfiles";
       allowReboot = true;
       rebootWindow = {

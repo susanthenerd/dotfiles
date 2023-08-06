@@ -1,8 +1,6 @@
 { config, lib, pkgs, ... }:
 { 
-  # imports =                                   # Home Manager Modules
-  #  (import ../modules/programs) ++
-  #  (import ../modules/services);
+  imports = (import ../modules/programs);
 
   home = {
     username = "susan";
@@ -31,6 +29,7 @@
 
   programs = {
     home-manager.enable = true;
+    fish.enable = true;
   };
 
   # gtk = {                                     # Theming
