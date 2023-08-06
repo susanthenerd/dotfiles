@@ -9,12 +9,12 @@ jobs:
   flake_check:
     runs-on: ubuntu-latest
 
-  steps:
-  - name: Checkout Repository
-    uses: actions/checkout@v3
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
-  - name: Setup Nix
-    uses: cachix/install-nix-action@v16
+    - name: Setup Nix
+      uses: cachix/install-nix-action@v16
 
-  - name: Nix Flake Check
-    run: nix flake check
+    - name: Nix Flake Check
+      run: nix flake check
