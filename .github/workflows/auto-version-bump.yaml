@@ -1,0 +1,27 @@
+name: Daily Nix Flake Version Bump
+
+on:
+  schedule:
+    - cron:  '0 0 * * *'
+
+jobs:
+  flake_update:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Setup Nix
+      uses: cachix/install-nix-action@v16
+
+    - name: Update Flake
+      run: |
+        nix flake update
+        if nix flake check; then
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add flake.lock
+          git commit -m "automated daily version bump"
+          git push
+        fi
