@@ -27,16 +27,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-    yubikey-manager
-    yubikey-manager-qt
-    signal-desktop
-    yubioath-flutter
-    git
-    wl-clipboard
-    emacs29-pgtk
-    vim
-    firefox
-    pinentry-curses
   ];
   programs = {
     fish.enable = true;

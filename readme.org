@@ -53,13 +53,13 @@ General configurations that used on all hosts + folders for host specific
       modules = [
         ./framework
         ./configuration.nix
-
-        # home-manager.nixosModules.home-manager {
-        #  home-manager.useUserPackages = true;
-        #  home-manager.users.susan = {
-        #    imports = [(import ./home.nix)] ++ [(import ./framework/home.nix)];
-        #  };
-        # } 
+  
+        home-manager.nixosModules.home-manager {
+          home-manager.useUserPackages = true;
+          home-manager.users.susan = {
+            imports = [(import ./home.nix)] ++ [(import ./framework/home.nix)];
+          };
+        } 
       ];
     };
   } 
@@ -69,7 +69,7 @@ General configurations that used on all hosts + folders for host specific
   { config, lib, pkgs, ... }:
   {
     time.timeZone = "Europe/Bucharest";
-
+  
     services = {
       udev.packages = [ pkgs.yubikey-personalization ];
       pcscd.enable = true;
@@ -83,7 +83,7 @@ General configurations that used on all hosts + folders for host specific
         desktopManager.gnome.enable = true;
       };
     };
-
+  
     users = {
       mutableUsers = false; 
       defaultUserShell = pkgs.fish;
@@ -93,18 +93,8 @@ General configurations that used on all hosts + folders for host specific
         hashedPassword = "$6$vru/Kz/2RFnBeCXQ$FPDE/DET/P2pNfE2bpVsEdDCeMegmeMApE4l3m/2YR9t6qCSrdiTzqUr8aN1gnOTAcYXBQ30NUf3UtqxINmDL.";
       };
     };
-
+  
     environment.systemPackages = with pkgs; [
-      yubikey-manager
-      yubikey-manager-qt
-      signal-desktop
-      yubioath-flutter
-      git
-      wl-clipboard
-      emacs29-pgtk
-      vim
-      firefox
-      pinentry-curses
     ];
     programs = {
       fish.enable = true;
@@ -118,7 +108,7 @@ General configurations that used on all hosts + folders for host specific
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
     networking.networkmanager.enable = true;
- 
+  
     system = { 
       # This value determines the NixOS release from which the default
       # settings for stateful data, like file locations and database versions
@@ -131,11 +121,66 @@ General configurations that used on all hosts + folders for host specific
   }
 #+end_src
 ** home.nix
+home-manager configs
 #+begin_src nix :tangle ./hosts/home.nix
   { config, lib, pkgs, ... }:
-  {
+  { 
+    # imports =                                   # Home Manager Modules
+    #  (import ../modules/programs) ++
+    #  (import ../modules/services);
+  
+    home = {
+      username = "susan";
+      homeDirectory = "/home/susan";
+  
+      packages = with pkgs; [
+        prismlauncher
+        firefox
+        signal-desktop                                                                                                                                                                                                            
+        yubioath-flutter                                                                                                                                                                                                          
+        git                                                                                                                                                                                                                       
+        emacs29-pgtk                                                                                                                                                                                                              
+        neovim                                                                                                                                                                                                                    
+        pinentry-curses  
+      ];
+      # pointerCursor = {                         # This will set cursor system-wide so applications can not choose their own
+      #  gtk.enable = true;
+      #  #name = "Dracula-cursors";
+      #  name = "Catppuccin-Mocha-Dark-Cursors";
+      #  #package = pkgs.dracula-theme;
+      #  package = pkgs.catppuccin-cursors.mochaDark;
+      #  size = 16;
+      # };
+      stateVersion = "23.05";
+    };
+  
+    programs = {
+      home-manager.enable = true;
+    };
+  
+    # gtk = {                                     # Theming
+    #  enable = true;
+    #  theme = {
+    #    #name = "Dracula";
+    #    name = "Catppuccin-Mocha-Compact-Blue-Dark";
+    #    #package = pkgs.dracula-theme;
+    #    package = pkgs.catppuccin-gtk.override {
+    #      accents = ["blue"];
+    #      size = "compact";
+    #      variant = "mocha";
+    #    };
+    #  };
+    #  iconTheme = {
+    #    name = "Papirus-Dark";
+    #    package = pkgs.papirus-icon-theme;
+    #  };
+    #  font = {
+    #    #name = "JetBrains Mono Medium";
+    #    name = "FiraCode Nerd Font Mono Medium";
+    #  };                                        # Cursor is declared under home.pointerCursor
+    # };
   }
-#+end_src
+#+END_src
 ** Framework Laptop
 Specific configs for my Framework Laptop
 Specs of the Framework
@@ -152,11 +197,10 @@ Segate Firecuda 530 2TB Nvme GEN 4x4
     programs = {
       light.enable = true;
     };
-
+  
     services = {
       #tlp.enable = true;                      # TLP and auto-cpufreq for power management
       auto-cpufreq.enable = true;
-
       blueman.enable = true;
     };
   }
@@ -217,3 +261,6 @@ Specific home-manager configs for my framework
     
   }
 #+end_src
+* Modules
+** Services
+** Programs

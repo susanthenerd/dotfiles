@@ -16,12 +16,12 @@ in
       ./framework
       ./configuration.nix
 
-      # home-manager.nixosModules.home-manager {
-      #  home-manager.useUserPackages = true;
-      #  home-manager.users.susan = {
-      #    imports = [(import ./home.nix)] ++ [(import ./framework/home.nix)];
-      #  };
-      # } 
+      home-manager.nixosModules.home-manager {
+        home-manager.useUserPackages = true;
+        home-manager.users.susan = {
+          imports = [(import ./home.nix)] ++ [(import ./framework/home.nix)];
+        };
+      } 
     ];
   };
 }
