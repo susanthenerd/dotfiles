@@ -264,3 +264,57 @@ Specific home-manager configs for my framework
 * Modules
 ** Services
 ** Programs
+* Github Actions
+** automate daily version bump
+#+begin_src yaml :tangle ./.github/workflows/auto-version-bump.yaml
+  name: Daily Nix Flake Version Bump
+
+  on:
+    schedule:
+      - cron:  '0 0 * * *'
+
+  jobs:
+    flake_update:
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Nix
+        uses: cachix/install-nix-action@v16
+
+      - name: Update Flake
+        run: |
+          nix flake update
+          if nix flake check; then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add flake.lock
+            git commit -m "automated daily version bump"
+            git push
+          fi
+#+end_src
+** automated nix flake check on push
+#+begin_src yaml :tangle ./.github/workflows/auto-commit-check.yaml
+  name: Nix Flake Check On Commit
+  
+  on:
+    push:
+      branches:
+        - '**'
+  
+  jobs:
+    flake_check:
+      runs-on: ubuntu-latest
+  
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Nix
+        uses: cachix/install-nix-action@v16
+
+      - name: Nix Flake Check
+        run: nix flake check
+#+end_src
