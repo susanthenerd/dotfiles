@@ -41,7 +41,17 @@
 
   networking.networkmanager.enable = true;
 
-  system = { 
+  system = {
+    autoUpgrade = {
+      enable = true;
+      dates = "daily";
+      flake = "github:susanthenerd/dotfiles";
+      allowReboot = true;
+      rebootWindow = {
+        lower = "02:00";
+        upper = "04:00";
+      };
+    }; 
     # This value determines the NixOS release from which the default
     # settings for stateful data, like file locations and database versions
     # on your system were taken. It's perfectly fine and recommended to leave

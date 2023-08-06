@@ -109,7 +109,17 @@ General configurations that used on all hosts + folders for host specific
 
     networking.networkmanager.enable = true;
   
-    system = { 
+    system = {
+      autoUpgrade = {
+        enable = true;
+        dates = "daily";
+        flake = "github:susanthenerd/dotfiles";
+        allowReboot = true;
+        rebootWindow = {
+          lower = "02:00";
+          upper = "04:00";
+        };
+      }; 
       # This value determines the NixOS release from which the default
       # settings for stateful data, like file locations and database versions
       # on your system were taken. It's perfectly fine and recommended to leave
@@ -197,6 +207,8 @@ Segate Firecuda 530 2TB Nvme GEN 4x4
     programs = {
       light.enable = true;
     };
+
+    networking.hostName = "framework";
   
     services = {
       #tlp.enable = true;                      # TLP and auto-cpufreq for power management
