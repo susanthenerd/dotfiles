@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 {
-  imports = [(import ./hardware-configuration.nix)];
+  imports = [(import ./hardware-configuration.nix)] ++ [(../../modules/services/syncthing)];
 
   programs = {
     light.enable = true;

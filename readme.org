@@ -1,5 +1,6 @@
 #+TITLE: My personal dotfiles configured using a single org file, using NixOS, home-manager and emacs
 #+PROPERTY: header-args :tangle-mode (identity #o444)
+#+STARTUP: overview
 #+AUTHOR: Susan
 #+EMAIL: susan@susan.lol
 
@@ -201,7 +202,7 @@ Segate Firecuda 530 2TB Nvme GEN 4x4
 #+begin_src nix :tangle ./hosts/framework/default.nix
   { config, pkgs, lib, ... }:
   {
-    imports = [(import ./hardware-configuration.nix)];
+    imports = [(import ./hardware-configuration.nix)] ++ [(../../modules/services/syncthing)];
   
     programs = {
       light.enable = true;
@@ -274,6 +275,28 @@ Specific home-manager configs for my framework
 #+end_src
 * Modules
 ** Services
+All services configured on my laptop and servers
+#+begin_src nix :tangle ./modules/services/default.nix
+  { config, lib, pkgs, ... }:
+  {
+    services = {
+      imports = [(import ./syncthing)]:
+    };
+  }
+#+end_src
+*** Syncthing
+File sync to my phone
+#+begin_src nix :tangle ./modules/services/syncthing/default.nix
+  {config, pkgs, lib, ... }:
+  { 
+    services.syncthing = {
+      enable = true;
+      user = "susan";
+      dataDir = "/home/susan/phone/";
+      configDir = "/home/susan/.config/syncthing"; # I don't have any special configurations, but I'm letting this option here in case I forget about it 
+    };
+  }
+#+end_src
 ** Programs
 
 #+begin_src nix :tangle ./modules/programs/default.nix
@@ -320,18 +343,41 @@ Specific home-manager configs for my framework
         uses: actions/checkout@v3
 
       - name: Setup Nix
-        uses: cachix/install-nix-action@v16
+        uses: cachix/install-nix-action@v22
 
-      - name: Update Flake
-        run: |
-          nix flake update
-          if nix flake check; then
+    update_flake:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Update Flake
+          run: nix flake update
+
+    check_flake:
+      needs: update_flake
+      runs-on: ubuntu-latest
+      steps:
+        - name: Check Flake
+          run: |
+            if nix flake check; then
+              echo "Flake is valid."
+            else
+              echo "Flake is invalid."
+              exit 1
+            fi
+
+    commit_changes:
+      needs: check_flake
+      runs-on: ubuntu-latest
+      steps:
+        - name: Configure Git
+          run: |
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
-            git add flake.lock
-            git commit -m "automated daily version bump"
-            git push
-          fi
+        - name: Stage changes
+          run: git add flake.lock
+        - name: Commit changes
+          run: git commit -m "Automated daily version bump"
+        - name: Push changes
+          run: git push
 #+end_src
 ** automated nix flake check on push
 #+begin_src yaml :tangle ./.github/workflows/auto-commit-check.yaml
@@ -351,7 +397,7 @@ Specific home-manager configs for my framework
         uses: actions/checkout@v3
 
       - name: Setup Nix
-        uses: cachix/install-nix-action@v16
+        uses: cachix/install-nix-action@v22
 
       - name: Nix Flake Check
         run: nix flake check
