@@ -45,6 +45,7 @@
     autoUpgrade = {
       enable = true;
       dates = "02:00";
+      persistent = true;
       flake = "github:susanthenerd/dotfiles";
       allowReboot = true;
       rebootWindow = {

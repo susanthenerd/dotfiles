@@ -114,6 +114,7 @@ General configurations that used on all hosts + folders for host specific
       autoUpgrade = {
         enable = true;
         dates = "02:00";
+        persistent = true;
         flake = "github:susanthenerd/dotfiles";
         allowReboot = true;
         rebootWindow = {
@@ -276,14 +277,6 @@ Specific home-manager configs for my framework
 * Modules
 ** Services
 All services configured on my laptop and servers
-#+begin_src nix :tangle ./modules/services/default.nix
-  { config, lib, pkgs, ... }:
-  {
-    services = {
-      imports = [(import ./syncthing)]:
-    };
-  }
-#+end_src
 *** Syncthing
 File sync to my phone
 #+begin_src nix :tangle ./modules/services/syncthing/default.nix
