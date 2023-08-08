@@ -2,6 +2,8 @@
 {
   time.timeZone = "Europe/Bucharest";
 
+  security.polkit.enable = true;
+
   services = {
     udev.packages = [ pkgs.yubikey-personalization ];
     pcscd.enable = true;
@@ -21,7 +23,7 @@
     defaultUserShell = pkgs.fish;
     users.susan = {
       isNormalUser = true;
-      extraGroups = [ "wheel" ];
+      extraGroups = [ "wheel" "video"];
       hashedPassword = "$6$vru/Kz/2RFnBeCXQ$FPDE/DET/P2pNfE2bpVsEdDCeMegmeMApE4l3m/2YR9t6qCSrdiTzqUr8aN1gnOTAcYXBQ30NUf3UtqxINmDL.";
     };
   };

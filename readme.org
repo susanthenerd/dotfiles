@@ -70,6 +70,8 @@ General configurations that used on all hosts + folders for host specific
   { config, lib, pkgs, ... }:
   {
     time.timeZone = "Europe/Bucharest";
+
+    security.polkit.enable = true;
   
     services = {
       udev.packages = [ pkgs.yubikey-personalization ];
@@ -90,7 +92,7 @@ General configurations that used on all hosts + folders for host specific
       defaultUserShell = pkgs.fish;
       users.susan = {
         isNormalUser = true;
-        extraGroups = [ "wheel" ];
+        extraGroups = [ "wheel" "video"];
         hashedPassword = "$6$vru/Kz/2RFnBeCXQ$FPDE/DET/P2pNfE2bpVsEdDCeMegmeMApE4l3m/2YR9t6qCSrdiTzqUr8aN1gnOTAcYXBQ30NUf3UtqxINmDL.";
       };
     };
@@ -137,7 +139,7 @@ home-manager configs
 #+begin_src nix :tangle ./hosts/home.nix
   { config, lib, pkgs, ... }:
   { 
-    imports = (import ../modules/programs);
+    imports = [(import ../modules/programs/starship)];
   
     home = {
       username = "susan";
@@ -151,7 +153,10 @@ home-manager configs
         git                                                                                                                                                                                                                       
         emacs29-pgtk                                                                                                                                                                                                              
         neovim                                                                                                                                                                                                                    
-        pinentry-curses  
+        pinentry-curses
+        obs-studio
+        xdg-desktop-portal-gtk
+        xdg-desktop-portal
       ];
       # pointerCursor = {                         # This will set cursor system-wide so applications can not choose their own
       #  gtk.enable = true;
@@ -271,7 +276,7 @@ Specific home-manager configs for my framework
 #+begin_src nix :tangle ./hosts/framework/home.nix
   { config, lib, pkgs, ... }:
   {
-    
+    imports = [(import ../../modules/programs/foot)];
   }
 #+end_src
 * Modules
@@ -291,13 +296,6 @@ File sync to my phone
   }
 #+end_src
 ** Programs
-
-#+begin_src nix :tangle ./modules/programs/default.nix
-  [
-    ./starship
-  ]
-#+end_src
-
 *** Starship
 #+begin_src nix :tangle ./modules/programs/starship/default.nix
   {config, lib, pkgs, ... }:
@@ -314,6 +312,36 @@ File sync to my phone
         # };
   
         # package.disabled = true;
+      };
+    };
+  }
+#+end_src
+*** Foot
+#+begin_src nix :tangle ./modules/programs/foot/default.nix
+  {config, lib, pkgs, ...}:
+  {
+    programs.foot = {
+      enable = true;
+      settings = {
+      };
+    };
+  }
+#+end_src
+
+** Desktop
+*** Sway
+#+begin_src nix :tangle ./modules/desktop/sway/default.nix
+  {config, lib, pkgs, ... }:
+  {
+    wayland.windowManager.sway = {
+      enable = true;
+      config = rec {
+        modifier = "Mod4";
+        terminal = "foot"; 
+        startup = [
+          # Launch Firefox on start
+          {command = "firefox";}
+        ];
       };
     };
   }

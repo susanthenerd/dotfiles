@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 { 
-  imports = (import ../modules/programs);
+  imports = [(import ../modules/programs/starship)];
 
   home = {
     username = "susan";
@@ -14,7 +14,10 @@
       git                                                                                                                                                                                                                       
       emacs29-pgtk                                                                                                                                                                                                              
       neovim                                                                                                                                                                                                                    
-      pinentry-curses  
+      pinentry-curses
+      obs-studio
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal
     ];
     # pointerCursor = {                         # This will set cursor system-wide so applications can not choose their own
     #  gtk.enable = true;
