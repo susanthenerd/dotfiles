@@ -13,7 +13,8 @@
       firefox
       signal-desktop                                                                                                                                                                                                            
       # yubioath-flutter                                                                                                                                                                                                          
-      git                                                                                                                                                                                                                       
+      git
+      # skypeforlinux
       emacs29-pgtk                                                                                                                                                                                                              
       neovim                                                                                                                                                                                                                    
       pinentry-curses

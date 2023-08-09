@@ -2,6 +2,8 @@
 {
   time.timeZone = "Europe/Bucharest";
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   security.polkit.enable = true;
 
   services = {

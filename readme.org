@@ -57,6 +57,7 @@ General configurations that used on all hosts + folders for host specific
   
         home-manager.nixosModules.home-manager {
           home-manager.useUserPackages = true;
+
           home-manager.users.susan = {
             imports = [(import ./home.nix)] ++ [(import ./framework/home.nix)];
           };
@@ -70,6 +71,8 @@ General configurations that used on all hosts + folders for host specific
   { config, lib, pkgs, ... }:
   {
     time.timeZone = "Europe/Bucharest";
+
+    boot.kernelPackages = pkgs.linuxPackages_latest;
 
     security.polkit.enable = true;
   
@@ -147,7 +150,8 @@ home-manager configs
         firefox
         signal-desktop                                                                                                                                                                                                            
         # yubioath-flutter                                                                                                                                                                                                          
-        git                                                                                                                                                                                                                       
+        git
+        # skypeforlinux
         emacs29-pgtk                                                                                                                                                                                                              
         neovim                                                                                                                                                                                                                    
         pinentry-curses
