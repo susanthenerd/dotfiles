@@ -80,11 +80,6 @@ General configurations that used on all hosts + folders for host specific
         enable = true;
         pulse.enable = true;
       }; 
-      xserver = {
-        enable = true;
-        displayManager.gdm.enable = true;
-        desktopManager.gnome.enable = true;
-      };
     };
   
     users = {
@@ -139,22 +134,23 @@ home-manager configs
 #+begin_src nix :tangle ./hosts/home.nix
   { config, lib, pkgs, ... }:
   { 
-    imports = [(import ../modules/programs/starship)];
+    imports = [(import ../modules/programs/starship)] ++
+    [(import ../modules/desktop/sway)];
   
     home = {
       username = "susan";
       homeDirectory = "/home/susan";
+      # enableNixpkgsReleaseCheck = false;
   
       packages = with pkgs; [
         prismlauncher
         firefox
         signal-desktop                                                                                                                                                                                                            
-        yubioath-flutter                                                                                                                                                                                                          
+        # yubioath-flutter                                                                                                                                                                                                          
         git                                                                                                                                                                                                                       
         emacs29-pgtk                                                                                                                                                                                                              
         neovim                                                                                                                                                                                                                    
         pinentry-curses
-        obs-studio
         xdg-desktop-portal-gtk
         xdg-desktop-portal
       ];

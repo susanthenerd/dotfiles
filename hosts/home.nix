@@ -1,21 +1,22 @@
 { config, lib, pkgs, ... }:
 { 
-  imports = [(import ../modules/programs/starship)];
+  imports = [(import ../modules/programs/starship)] ++
+  [(import ../modules/desktop/sway)];
 
   home = {
     username = "susan";
     homeDirectory = "/home/susan";
+    # enableNixpkgsReleaseCheck = false;
 
     packages = with pkgs; [
       prismlauncher
       firefox
       signal-desktop                                                                                                                                                                                                            
-      yubioath-flutter                                                                                                                                                                                                          
+      # yubioath-flutter                                                                                                                                                                                                          
       git                                                                                                                                                                                                                       
       emacs29-pgtk                                                                                                                                                                                                              
       neovim                                                                                                                                                                                                                    
       pinentry-curses
-      obs-studio
       xdg-desktop-portal-gtk
       xdg-desktop-portal
     ];
