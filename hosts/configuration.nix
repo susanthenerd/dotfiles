@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 {
   time.timeZone = "Europe/Bucharest";
-
+  hardware.enableAllFirmware = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   security.polkit.enable = true;

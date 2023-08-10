@@ -21,7 +21,7 @@ Generate the flake.nix directly from org
       };
     };
   
-    outputs = inputs @ {self, home-manager, nixpkgs, ...} :
+    outputs = inputs @ {self, nixpkgs, home-manager, ...} :
     {
       nixosConfigurations = (
         import ./hosts {
@@ -71,7 +71,7 @@ General configurations that used on all hosts + folders for host specific
   { config, lib, pkgs, ... }:
   {
     time.timeZone = "Europe/Bucharest";
-
+    hardware.enableAllFirmware = true;
     boot.kernelPackages = pkgs.linuxPackages_latest;
 
     security.polkit.enable = true;

@@ -10,7 +10,7 @@
     };
   };
 
-  outputs = inputs @ {self, home-manager, nixpkgs, ...} :
+  outputs = inputs @ {self, nixpkgs, home-manager, ...} :
   {
     nixosConfigurations = (
       import ./hosts {
