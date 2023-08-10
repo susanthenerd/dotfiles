@@ -1,4 +1,4 @@
-#+TITLE: My personal dotfiles configured using a single org file, using NixOS, home-manager and emacs
+:q#+TITLE: My personal dotfiles configured using a single org file, using NixOS, home-manager and emacs
 #+PROPERTY: header-args :tangle-mode (identity #o444)
 #+STARTUP: overview
 #+AUTHOR: Susan
@@ -71,7 +71,7 @@ General configurations that used on all hosts + folders for host specific
   { config, lib, pkgs, ... }:
   {
     time.timeZone = "Europe/Bucharest";
-  
+    hardware.enableAllFirmware = true;
     boot.kernelPackages = pkgs.linuxPackages_latest;
 
     security.polkit.enable = true;
