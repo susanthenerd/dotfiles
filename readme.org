@@ -77,6 +77,11 @@ General configurations that used on all hosts + folders for host specific
     security.polkit.enable = true;
     nixpkgs.config.allowUnfree = true;
 
+    fonts.packages = with pkgs; [
+     (nerdfonts.override { fonts = [ "FiraCode" ]; })
+    ];
+
+  
     services = {
       udev.packages = [ pkgs.yubikey-personalization ];
       pcscd.enable = true;
@@ -227,8 +232,13 @@ Segate Firecuda 530 2TB Nvme GEN 4x4
 *** hardware-configuration.nix
 The only special thing here is that I have here configured the file systems
 #+begin_src nix :tangle ./hosts/framework/hardware-configuration.nix
-  { config, lib, pkgs, ... }:
+  { config, lib, pkgs, modulesPath, ... }:
   {
+
+    imports =
+    [ (modulesPath + "/installer/scan/not-detected.nix")
+    ];
+
     fileSystems = {
       "/" ={ 
         device = "/dev/disk/by-uuid/b183e5d3-8679-4e45-88e6-bc1393323dfd";

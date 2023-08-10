@@ -7,6 +7,11 @@
   security.polkit.enable = true;
   nixpkgs.config.allowUnfree = true;
 
+  fonts.packages = with pkgs; [
+   (nerdfonts.override { fonts = [ "FiraCode" ]; })
+  ];
+
+
   services = {
     udev.packages = [ pkgs.yubikey-personalization ];
     pcscd.enable = true;
