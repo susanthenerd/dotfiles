@@ -212,6 +212,11 @@ Segate Firecuda 530 2TB Nvme GEN 4x4
 #+begin_src nix :tangle ./hosts/framework/default.nix
   { config, pkgs, lib, ... }:
   {
+    security.pam.services = {
+      login.u2fAuth = true;
+      sudo.u2fAuth = true;
+    };
+  
     imports = [(import ./hardware-configuration.nix)] ++ [(../../modules/services/syncthing)];
   
     programs = {
