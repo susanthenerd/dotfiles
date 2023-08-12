@@ -2,6 +2,7 @@
 { 
   imports = [(import ../modules/programs/starship)]
   ++ [(import ../modules/programs/git)]
+  ++ [(import ../modules/programs/exa)]
   ++ [(import ../modules/desktop/sway)];
 
   home = {

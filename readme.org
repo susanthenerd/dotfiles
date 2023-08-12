@@ -141,6 +141,7 @@ home-manager configs
   { 
     imports = [(import ../modules/programs/starship)]
     ++ [(import ../modules/programs/git)]
+    ++ [(import ../modules/programs/exa)]
     ++ [(import ../modules/desktop/sway)];
   
     home = {
@@ -303,9 +304,21 @@ File sync to my phone
   }
 #+end_src
 ** Programs
+*** Exa
+#+begin_src nix :tangle ./modules/programs/exa/default.nix
+  {config, lib, pkgs, ... }:
+  {
+    programs.exa = {
+      enable = true;
+      git = true;
+      icons = true;
+      enableAliases = true;
+    };
+  }
+#+end_src
 *** Git
 #+begin_src nix :tangle ./modules/programs/git/default.nix
-  {config, lib, pkgs, ...}:
+  {config, lib, pkgs, ... }:
   {
     programs.git = {
       enable = true;
