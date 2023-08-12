@@ -1,4 +1,5 @@
 { config, lib, pkgs, ... }:
 {
-  imports = [(import ../../modules/programs/foot)];
+  imports = [(import ../../modules/desktop/sway)]
+  ++ [(import ../../modules/programs/foot)];
 }

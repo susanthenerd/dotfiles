@@ -142,10 +142,8 @@ home-manager configs
     imports =
     [(import ../modules/programs/exa)]
     ++ [(import ../modules/programs/fish)]
-    ++ [(import ../modules/programs/foot)]
     ++ [(import ../modules/programs/git)]
-    ++ [(import ../modules/programs/starship)]
-    ++ [(import ../modules/desktop/sway)];
+    ++ [(import ../modules/programs/starship)];
   
     home = {
       username = "susan";
@@ -287,7 +285,8 @@ Specific home-manager configs for my framework
 #+begin_src nix :tangle ./hosts/framework/home.nix
   { config, lib, pkgs, ... }:
   {
-    imports = [(import ../../modules/programs/foot)];
+    imports = [(import ../../modules/desktop/sway)]
+    ++ [(import ../../modules/programs/foot)];
   }
 #+end_src
 * Modules
@@ -334,7 +333,8 @@ Specific home-manager configs for my framework
     programs.fish = {
       enable = true;
       shellAliases = {
-        "rebuild" = "sudo nixos-rebuild --flake .";
+        "rebuild" = "sudo nixos-rebuild switch --flake .";
+        "flake-check" = "nix flake check";
       };
     };
   }

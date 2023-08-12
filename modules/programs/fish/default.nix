@@ -3,7 +3,7 @@
   programs.fish = {
     enable = true;
     shellAliases = {
-      "rebuild" = "sudo nixos-rebuild --flake .";
+      "rebuild" = "sudo nixos-rebuild switch --flake .";
     };
   };
 }

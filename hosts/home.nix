@@ -3,10 +3,8 @@
   imports =
   [(import ../modules/programs/exa)]
   ++ [(import ../modules/programs/fish)]
-  ++ [(import ../modules/programs/foot)]
   ++ [(import ../modules/programs/git)]
-  ++ [(import ../modules/programs/starship)]
-  ++ [(import ../modules/desktop/sway)];
+  ++ [(import ../modules/programs/starship)];
 
   home = {
     username = "susan";
