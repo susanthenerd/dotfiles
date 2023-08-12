@@ -139,9 +139,7 @@ home-manager configs
 #+begin_src nix :tangle ./hosts/home.nix
   { config, lib, pkgs, ... }:
   { 
-    imports = [(import ../modules/programs/starship)]
-    ++ [(import ../modules/programs/git)]
-    ++ [(import ../modules/desktop/sway)];
+    imports = [(import ../modules/programs/starship)] ++ [(import ../modules/desktop/sway)];
   
     home = {
       username = "susan";
@@ -304,10 +302,10 @@ File sync to my phone
 #+end_src
 ** Programs
 *** Git
-#+begin_src nix :tangle ./modules/programs/git/default.nix
+#+begin_src nix :tangle ./modules/programs/starship/default.nix
   {config, lib, pkgs, ...}:
   {
-    programs.git = {
+    programrs.git = {
       enable = true;
       userName = "Susan";
       userEmail = "susan@susan.lol";

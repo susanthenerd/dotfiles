@@ -1,25 +1,22 @@
 { config, lib, pkgs, ... }:
 { 
-  imports = [(import ../modules/programs/starship)] ++
-  [(import ../modules/desktop/sway)];
+  imports = [(import ../modules/programs/starship)]
+  ++ [(import ../modules/programs/git)]
+  ++ [(import ../modules/desktop/sway)];
 
   home = {
     username = "susan";
     homeDirectory = "/home/susan";
-    # enableNixpkgsReleaseCheck = false;
 
     packages = with pkgs; [
       prismlauncher
       firefox
-      signal-desktop                                                                                                                                                                                                            
-      # yubioath-flutter                                                                                                                                                                                                          
-      git
+      signal-desktop
+      # yubioath-flutter
       # skypeforlinux
-      emacs29-pgtk                                                                                                                                                                                                              
-      neovim                                                                                                                                                                                                                    
+      pavucontrol
+      emacs29-pgtk
       pinentry-curses
-      xdg-desktop-portal-gtk
-      xdg-desktop-portal
     ];
     # pointerCursor = {                         # This will set cursor system-wide so applications can not choose their own
     #  gtk.enable = true;
@@ -32,9 +29,12 @@
     stateVersion = "23.05";
   };
 
+  xdg.enable = true;
+
   programs = {
     home-manager.enable = true;
     fish.enable = true;
+    neovim.enable = true;
   };
 
   # gtk = {                                     # Theming

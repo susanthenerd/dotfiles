@@ -33,13 +33,9 @@
 
   environment.systemPackages = with pkgs; [
   ];
+
   programs = {
     fish.enable = true;
-    gnupg.agent = {
-      enable = true;
-      enableSSHSupport = true;
-      pinentryFlavor = "curses";
-    };
   };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
