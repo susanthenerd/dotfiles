@@ -1,8 +1,11 @@
 { config, lib, pkgs, ... }:
 { 
-  imports = [(import ../modules/programs/starship)]
+  imports =
+  [(import ../modules/programs/exa)]
+  ++ [(import ../modules/programs/fish)]
+  ++ [(import ../modules/programs/foot)]
   ++ [(import ../modules/programs/git)]
-  ++ [(import ../modules/programs/exa)]
+  ++ [(import ../modules/programs/starship)]
   ++ [(import ../modules/desktop/sway)];
 
   home = {
