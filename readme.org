@@ -288,18 +288,26 @@ Specific home-manager configs for my framework
   }
 #+end_src
 * Modules
-** Services
-All services configured on my laptop and servers
-*** Syncthing
-File sync to my phone
-#+begin_src nix :tangle ./modules/services/syncthing/default.nix
-  {config, pkgs, lib, ... }:
-  { 
-    services.syncthing = {
+** Desktop
+*** Sway
+#+begin_src nix :tangle ./modules/desktop/sway/default.nix
+  {config, lib, pkgs, ... }:
+  {
+    wayland.windowManager.sway = {
       enable = true;
-      user = "susan";
-      dataDir = "/home/susan/phone/";
-      configDir = "/home/susan/.config/syncthing"; # I don't have any special configurations, but I'm letting this option here in case I forget about it 
+      config = rec {
+        modifier = "Mod4";
+        terminal = "foot"; 
+        startup = [
+          # Launch Firefox on start
+          {command = "firefox";}
+        ];
+        output = {
+          eDP-1 = {
+            scale = "1";
+	  };
+	};
+      };
     };
   }
 #+end_src
@@ -316,6 +324,30 @@ File sync to my phone
     };
   }
 #+end_src
+*** Fish
+#+begin_src nix :tangle ./modules/programs/fish/default.nix
+  {config, lib, pkgs, ...}:
+  {
+    programs.fish = {
+      enable = true;
+      shellAliases = {
+        "rebuild" = "sudo nixos-rebuild --flake .";
+      };
+    };
+  }
+#+end_src
+*** Foot
+#+begin_src nix :tangle ./modules/programs/foot/default.nix
+  {config, lib, pkgs, ...}:
+  {
+    programs.foot = {
+      enable = true;
+      settings = {
+      };
+    };
+  }
+#+end_src
+
 *** Git
 #+begin_src nix :tangle ./modules/programs/git/default.nix
   {config, lib, pkgs, ... }:
@@ -347,38 +379,18 @@ File sync to my phone
     };
   }
 #+end_src
-*** Foot
-#+begin_src nix :tangle ./modules/programs/foot/default.nix
-  {config, lib, pkgs, ...}:
-  {
-    programs.foot = {
+** Services
+All services configured on my laptop and servers
+*** Syncthing
+File sync to my phone
+#+begin_src nix :tangle ./modules/services/syncthing/default.nix
+  {config, pkgs, lib, ... }:
+  { 
+    services.syncthing = {
       enable = true;
-      settings = {
-      };
-    };
-  }
-#+end_src
-
-** Desktop
-*** Sway
-#+begin_src nix :tangle ./modules/desktop/sway/default.nix
-  {config, lib, pkgs, ... }:
-  {
-    wayland.windowManager.sway = {
-      enable = true;
-      config = rec {
-        modifier = "Mod4";
-        terminal = "foot"; 
-        startup = [
-          # Launch Firefox on start
-          {command = "firefox";}
-        ];
-        output = {
-          eDP-1 = {
-            scale = "1";
-	  };
-	};
-      };
+      user = "susan";
+      dataDir = "/home/susan/phone/";
+      configDir = "/home/susan/.config/syncthing"; # I don't have any special configurations, but I'm letting this option here in case I forget about it 
     };
   }
 #+end_src
