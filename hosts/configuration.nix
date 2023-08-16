@@ -11,7 +11,6 @@
    (nerdfonts.override { fonts = [ "FiraCode" ]; })
   ];
 
-
   services = {
     udev.packages = [ pkgs.yubikey-personalization ];
     pcscd.enable = true;

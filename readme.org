@@ -80,7 +80,6 @@ General configurations that used on all hosts + folders for host specific
     fonts.packages = with pkgs; [
      (nerdfonts.override { fonts = [ "FiraCode" ]; })
     ];
-
   
     services = {
       udev.packages = [ pkgs.yubikey-personalization ];
@@ -178,27 +177,20 @@ home-manager configs
       neovim.enable = true;
     };
   
-    # gtk = {                                     # Theming
-    #  enable = true;
-    #  theme = {
-    #    #name = "Dracula";
-    #    name = "Catppuccin-Mocha-Compact-Blue-Dark";
-    #    #package = pkgs.dracula-theme;
-    #    package = pkgs.catppuccin-gtk.override {
-    #      accents = ["blue"];
-    #      size = "compact";
-    #      variant = "mocha";
-    #    };
-    #  };
-    #  iconTheme = {
-    #    name = "Papirus-Dark";
-    #    package = pkgs.papirus-icon-theme;
-    #  };
-    #  font = {
-    #    #name = "JetBrains Mono Medium";
-    #    name = "FiraCode Nerd Font Mono Medium";
-    #  };                                        # Cursor is declared under home.pointerCursor 
-    # };
+    gtk = {                                     # Theming
+      enable = true;
+      theme = {
+        name = "Catppuccin-Mocha-Compact-Blue-Dark";
+        package = pkgs.gruvbox-dark-gtk;
+      };
+      iconTheme = {
+        name = "Papirus-Dark";
+        package = pkgs.papirus-icon-theme;
+      };
+      font = {
+        name = "FiraCode Nerd Font Mono Medium";
+      };                                        # Cursor is declared under home.pointerCursor 
+    };
   }
 #+END_src
 ** Framework Laptop
@@ -309,6 +301,39 @@ Specific home-manager configs for my framework
           # Launch Firefox on start
           {command = "firefox";}
         ];
+        bars = [];
+        gaps = {
+          outer = 5;
+          inner = 2;
+          smartBorders = "on";
+        };
+        keybindings = {
+          #Launch stuff
+          "${modifier}+Return" = "exec ${pkgs.foot}/bin/foot";
+          # Windows
+          "${modifier}+Shift+c" = "kill";
+          #Workspaces
+          "${modifier}+1" = "workspace number 1";
+          "${modifier}+2" = "workspace number 2";
+          "${modifier}+3" = "workspace number 3";
+          "${modifier}+4" = "workspace number 4";
+          "${modifier}+5" = "workspace number 5";
+          "${modifier}+6" = "workspace number 6";
+          "${modifier}+7" = "workspace number 7";
+          "${modifier}+8" = "workspace number 8";
+          "${modifier}+9" = "workspace number 9";
+
+          "${modifier}+Shift+1" = "move container to workspace number 1";                                                               
+      	  "${modifier}+Shift+2" = "move container to workspace number 2";                                                               
+      	  "${modifier}+Shift+3" = "move container to workspace number 3";                                                               
+   	  "${modifier}+Shift+4" = "move container to workspace number 4";                                                               
+      	  "${modifier}+Shift+5" = "move container to workspace number 5";                                                               
+      	  "${modifier}+Shift+6" = "move container to workspace number 6";                                                               
+      	  "${modifier}+Shift+7" = "move container to workspace number 7";                                                               
+      	  "${modifier}+Shift+8" = "move container to workspace number 8";                                                               
+      	  "${modifier}+Shift+9" = "move container to workspace number 9";
+          #Other keybindings
+        };
         output = {
           eDP-1 = {
             scale = "1";
@@ -351,11 +376,31 @@ Specific home-manager configs for my framework
     programs.foot = {
       enable = true;
       settings = {
+        colors = {
+          # Gruvbox Dark
+          background = "282828";
+          foreground = "ebdbb2";
+          regular0 = "282828";
+          regular1 = "cc241d";
+          regular2 = "98971a";
+          regular3 = "d79921";
+          regular4 = "458588";
+          regular5 = "b16286";
+          regular6 = "689d6a";
+          regular7 = "a89984";
+          bright0 = "928374";
+          bright1 = "fb4934";
+          bright2 = "b8bb26";
+          bright3 = "fabd2f";
+          bright4 = "83a598";
+          bright5 = "d3869b";
+          bright6 = "8ec07c";
+          bright7 = "ebdbb2";
+        };
       };
     };
   }
 #+end_src
-
 *** Git
 #+begin_src nix :tangle ./modules/programs/git/default.nix
   {config, lib, pkgs, ... }:

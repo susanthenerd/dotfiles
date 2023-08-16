@@ -39,25 +39,18 @@
     neovim.enable = true;
   };
 
-  # gtk = {                                     # Theming
-  #  enable = true;
-  #  theme = {
-  #    #name = "Dracula";
-  #    name = "Catppuccin-Mocha-Compact-Blue-Dark";
-  #    #package = pkgs.dracula-theme;
-  #    package = pkgs.catppuccin-gtk.override {
-  #      accents = ["blue"];
-  #      size = "compact";
-  #      variant = "mocha";
-  #    };
-  #  };
-  #  iconTheme = {
-  #    name = "Papirus-Dark";
-  #    package = pkgs.papirus-icon-theme;
-  #  };
-  #  font = {
-  #    #name = "JetBrains Mono Medium";
-  #    name = "FiraCode Nerd Font Mono Medium";
-  #  };                                        # Cursor is declared under home.pointerCursor 
-  # };
+  gtk = {                                     # Theming
+    enable = true;
+    theme = {
+      name = "Catppuccin-Mocha-Compact-Blue-Dark";
+      package = pkgs.gruvbox-dark-gtk;
+    };
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
+    };
+    font = {
+      name = "FiraCode Nerd Font Mono Medium";
+    };                                        # Cursor is declared under home.pointerCursor 
+  };
 }
