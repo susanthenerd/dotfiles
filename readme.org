@@ -284,7 +284,8 @@ Specific home-manager configs for my framework
   { config, lib, pkgs, ... }:
   {
     imports = [(import ../../modules/desktop/sway)]
-    ++ [(import ../../modules/programs/foot)];
+    ++ [(import ../../modules/programs/foot)]
+    ++ [(import ../../modules/programs/i3status-rust)];
   }
 #+end_src
 * Modules
@@ -302,7 +303,42 @@ Specific home-manager configs for my framework
           # Launch Firefox on start
           {command = "firefox";}
         ];
-        bars = [];
+        bars = [
+          {
+            fonts = {
+              names = [ "FiraCode Nerd Font Mono"];
+              style = "Regular";
+              size = 11.0;
+            };
+            position = "top";
+            statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";
+            colors={
+              separator = "#666666";
+              background = "#222222";
+              statusline = "#dddddd";
+              focusedWorkspace = {
+                background = "#0088CC";
+                border = "#0088CC";
+                text = "#ffffff";
+              };
+              activeWorkspace = {
+                background = "#333333";
+                border = "#333333";
+                text = "#ffffff";
+              };
+              inactiveWorkspace = {
+               background = "#333333";
+               border = "#333333";
+               text = "#888888";
+              };
+              urgentWorkspace = {
+                background = "#2f343a";
+                border = "#900000";
+                text = "#ffffff";
+              };
+            };
+          }
+        ];
         gaps = {
           outer = 4;
           inner = 4;
@@ -458,6 +494,51 @@ Specific home-manager configs for my framework
       enable = true;
       userName = "Susan";
       userEmail = "susan@susan.lol";
+    };
+  }
+#+end_src
+*** i3Status-rust
+#+begin_src nix :tangle ./modules/programs/i3status-rust/default.nix
+  {config, lib, pkgs, ... }:
+  {
+    programs.i3status-rust = {
+      enable = true;
+      bars = {
+        default = {
+          blocks = [
+            {
+              alert = 10.0;
+              block = "disk_space";
+              info_type = "available";
+              interval = 60;
+              path = "/";
+              warning = 20.0;
+            }
+            {
+              block = "memory";
+              format = "$icon $mem_used_percents ";
+              format_alt = " $icon $swap_used_percents ";
+            }
+            {
+              block = "cpu";
+              interval = 1;
+            }
+            {
+              block = "load";
+              format = " $icon $1m ";
+              interval = 1;
+            }
+            {
+              block = "sound";
+            }
+            {
+              block = "time";
+              format = " $timestamp.datetime(f:'%a %d/%m %R') ";
+              interval = 60;
+            }
+          ];
+        };
+      };
     };
   }
 #+end_src

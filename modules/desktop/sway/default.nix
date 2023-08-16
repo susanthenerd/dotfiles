@@ -9,7 +9,42 @@
         # Launch Firefox on start
         {command = "firefox";}
       ];
-      bars = [];
+      bars = [
+        {
+          fonts = {
+            names = [ "FiraCode Nerd Font Mono"];
+            style = "Regular";
+            size = 11.0;
+          };
+          position = "top";
+          statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";
+          colors={
+            separator = "#666666";
+            background = "#222222";
+            statusline = "#dddddd";
+            focusedWorkspace = {
+              background = "#0088CC";
+              border = "#0088CC";
+              text = "#ffffff";
+            };
+            activeWorkspace = {
+              background = "#333333";
+              border = "#333333";
+              text = "#ffffff";
+            };
+            inactiveWorkspace = {
+             background = "#333333";
+             border = "#333333";
+             text = "#888888";
+            };
+            urgentWorkspace = {
+              background = "#2f343a";
+              border = "#900000";
+              text = "#ffffff";
+            };
+          };
+        }
+      ];
       gaps = {
         outer = 4;
         inner = 4;
