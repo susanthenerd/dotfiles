@@ -19,6 +19,7 @@
       pavucontrol
       emacs29-pgtk
       pinentry-curses
+      fuzzel
     ];
     # pointerCursor = {                         # This will set cursor system-wide so applications can not choose their own
     #  gtk.enable = true;
@@ -39,18 +40,18 @@
     neovim.enable = true;
   };
 
-  gtk = {                                     # Theming
-    enable = true;
-    theme = {
-      name = "Catppuccin-Mocha-Compact-Blue-Dark";
-      package = pkgs.gruvbox-dark-gtk;
-    };
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
-    };
-    font = {
-      name = "FiraCode Nerd Font Mono Medium";
-    };                                        # Cursor is declared under home.pointerCursor 
-  };
+  #gtk = {                                     # Theming
+  #  enable = true;
+  #  theme = {
+  #    name = "Gruvbox-Dark";
+  #    package = pkgs.gruvbox-dark-gtk;
+  #  };
+  #  iconTheme = {
+  #    name = "Papirus-Dark";
+  #    package = pkgs.papirus-icon-theme;
+  #  };
+  #  font = {
+  #    name = "FiraCode Nerd Font Mono Medium";
+  #  };                                        # Cursor is declared under home.pointerCursor 
+  #};
 }

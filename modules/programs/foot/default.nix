@@ -3,6 +3,9 @@
   programs.foot = {
     enable = true;
     settings = {
+      main = {
+        font = "FiraCode Nerd Font Mono:size=14";
+      };
       colors = {
         # Gruvbox Dark
         background = "282828";
