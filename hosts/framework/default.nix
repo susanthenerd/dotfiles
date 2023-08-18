@@ -18,4 +18,8 @@
     auto-cpufreq.enable = true;
     blueman.enable = true;
   };
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+  };
 }

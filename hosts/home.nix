@@ -32,8 +32,6 @@
     stateVersion = "23.05";
   };
 
-  xdg.enable = true;
-
   programs = {
     home-manager.enable = true;
     fish.enable = true;

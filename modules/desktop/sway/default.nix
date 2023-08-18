@@ -12,37 +12,37 @@
       bars = [
         {
           fonts = {
-            names = [ "FiraCode Nerd Font Mono"];
+            names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
             style = "Regular";
             size = 11.0;
           };
           position = "top";
           statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";
-          colors={
-            separator = "#666666";
-            background = "#222222";
-            statusline = "#dddddd";
-            focusedWorkspace = {
-              background = "#0088CC";
-              border = "#0088CC";
-              text = "#ffffff";
-            };
-            activeWorkspace = {
-              background = "#333333";
-              border = "#333333";
-              text = "#ffffff";
-            };
-            inactiveWorkspace = {
-             background = "#333333";
-             border = "#333333";
-             text = "#888888";
-            };
-            urgentWorkspace = {
-              background = "#2f343a";
-              border = "#900000";
-              text = "#ffffff";
-            };
-          };
+          # colors={
+          #  separator = "#666666";
+          #  background = "#222222";
+          #  statusline = "#dddddd";
+          #  focusedWorkspace = {
+          #    background = "#0088CC";
+          #    border = "#0088CC";
+          #    text = "#ffffff";
+          #  };
+          #  activeWorkspace = {
+          #    background = "#333333";
+          #    border = "#333333";
+          #    text = "#ffffff";
+          #  };
+          #  inactiveWorkspace = {
+          #   background = "#333333";
+          #   border = "#333333";
+          #   text = "#888888";
+          #  };
+          #  urgentWorkspace = {
+          #    background = "#2f343a";
+          #    border = "#900000";
+          #    text = "#ffffff";
+          #  };
+          #};
         }
       ];
       gaps = {
@@ -101,24 +101,24 @@
       	"${modifier}+Shift+9" = "move container to workspace number 9";
 
         # Resize
-        "${modifier}+r" = "resize";
+        "${modifier}+r" = "mode resize";
 
         # Other keybindings
         "${modifier}+Shift+r" = "reload";
-
+        "${modifier}+Shift+e" = "exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'";
       };
       modes = {
         resize = {
-          Down = "resize grow height 10 px";
-          Escape = "mode default";
-          Left = "resize shrink width 10 px";
-          Return = "mode default";
-          Right = "resize grow width 10 px";
-          Up = "resize shrink height 10 px";
-          h = "resize shrink width 10 px";
-          j = "resize grow height 10 px";
-          k = "resize shrink height 10 px";
-          l = "resize grow width 10 px";
+          "Down" = "resize grow height 10 px";
+          "Escape" = "mode default";
+          "Left" = "resize shrink width 10 px";
+          "Return" = "mode default";
+          "Right" = "resize grow width 10 px";
+          "Up" = "resize shrink height 10 px";
+          "h" = "resize shrink width 10 px";
+          "j" = "resize grow height 10 px";
+          "k" = "resize shrink height 10 px";
+          "l" = "resize grow width 10 px";
         };
       };
 

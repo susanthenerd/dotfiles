@@ -79,6 +79,7 @@ General configurations that used on all hosts + folders for host specific
 
     fonts.packages = with pkgs; [
      (nerdfonts.override { fonts = [ "FiraCode" ]; })
+     font-awesome
     ];
   
     services = {
@@ -170,8 +171,6 @@ home-manager configs
       stateVersion = "23.05";
     };
 
-    xdg.enable = true;
-  
     programs = {
       home-manager.enable = true;
       fish.enable = true;
@@ -222,6 +221,10 @@ Segate Firecuda 530 2TB Nvme GEN 4x4
       #tlp.enable = true;                      # TLP and auto-cpufreq for power management
       auto-cpufreq.enable = true;
       blueman.enable = true;
+    };
+    xdg.portal = {
+      enable = true;
+      wlr.enable = true;
     };
   }
 #+end_src
@@ -286,6 +289,10 @@ Specific home-manager configs for my framework
     imports = [(import ../../modules/desktop/sway)]
     ++ [(import ../../modules/programs/foot)]
     ++ [(import ../../modules/programs/i3status-rust)];
+    programs = {
+      obs-studio.enable = true;
+    };
+    xdg.enable = true;
   }
 #+end_src
 * Modules
@@ -306,37 +313,37 @@ Specific home-manager configs for my framework
         bars = [
           {
             fonts = {
-              names = [ "FiraCode Nerd Font Mono"];
+              names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
               style = "Regular";
               size = 11.0;
             };
-            position = "top";
+            position = "bottom";
             statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";
-            colors={
-              separator = "#666666";
-              background = "#222222";
-              statusline = "#dddddd";
-              focusedWorkspace = {
-                background = "#0088CC";
-                border = "#0088CC";
-                text = "#ffffff";
-              };
-              activeWorkspace = {
-                background = "#333333";
-                border = "#333333";
-                text = "#ffffff";
-              };
-              inactiveWorkspace = {
-               background = "#333333";
-               border = "#333333";
-               text = "#888888";
-              };
-              urgentWorkspace = {
-                background = "#2f343a";
-                border = "#900000";
-                text = "#ffffff";
-              };
-            };
+            # colors={
+            #  separator = "#666666";
+            #  background = "#222222";
+            #  statusline = "#dddddd";
+            #  focusedWorkspace = {
+            #    background = "#0088CC";
+            #    border = "#0088CC";
+            #    text = "#ffffff";
+            #  };
+            #  activeWorkspace = {
+            #    background = "#333333";
+            #    border = "#333333";
+            #    text = "#ffffff";
+            #  };
+            #  inactiveWorkspace = {
+            #   background = "#333333";
+            #   border = "#333333";
+            #   text = "#888888";
+            #  };
+            #  urgentWorkspace = {
+            #    background = "#2f343a";
+            #    border = "#900000";
+            #    text = "#ffffff";
+            #  };
+            #};
           }
         ];
         gaps = {
@@ -395,24 +402,24 @@ Specific home-manager configs for my framework
       	  "${modifier}+Shift+9" = "move container to workspace number 9";
 
           # Resize
-          "${modifier}+r" = "resize";
+          "${modifier}+r" = "mode resize";
   
           # Other keybindings
           "${modifier}+Shift+r" = "reload";
-  
+          "${modifier}+Shift+e" = "exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'";
         };
         modes = {
           resize = {
-            Down = "resize grow height 10 px";
-            Escape = "mode default";
-            Left = "resize shrink width 10 px";
-            Return = "mode default";
-            Right = "resize grow width 10 px";
-            Up = "resize shrink height 10 px";
-            h = "resize shrink width 10 px";
-            j = "resize grow height 10 px";
-            k = "resize shrink height 10 px";
-            l = "resize grow width 10 px";
+            "Down" = "resize grow height 10 px";
+            "Escape" = "mode default";
+            "Left" = "resize shrink width 10 px";
+            "Return" = "mode default";
+            "Right" = "resize grow width 10 px";
+            "Up" = "resize shrink height 10 px";
+            "h" = "resize shrink width 10 px";
+            "j" = "resize grow height 10 px";
+            "k" = "resize shrink height 10 px";
+            "l" = "resize grow width 10 px";
           };
         };
   
@@ -505,18 +512,12 @@ Specific home-manager configs for my framework
       enable = true;
       bars = {
         default = {
+          theme = "gruvbox-dark";
+          icons = "awesome6";
           blocks = [
             {
-              alert = 10.0;
-              block = "disk_space";
-              info_type = "available";
-              interval = 60;
-              path = "/";
-              warning = 20.0;
-            }
-            {
               block = "memory";
-              format = "$icon $mem_used_percents ";
+              format = " $icon $mem_used_percents ";
               format_alt = " $icon $swap_used_percents ";
             }
             {
@@ -530,6 +531,9 @@ Specific home-manager configs for my framework
             }
             {
               block = "sound";
+            }
+            {
+              block = "backlight";
             }
             {
               block = "time";
