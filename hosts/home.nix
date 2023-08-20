@@ -14,7 +14,7 @@
       prismlauncher
       firefox
       signal-desktop
-      # yubioath-flutter
+      yubioath-flutter
       # skypeforlinux
       pavucontrol
       emacs29-pgtk

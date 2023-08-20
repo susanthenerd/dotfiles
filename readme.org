@@ -76,7 +76,7 @@ General configurations that used on all hosts + folders for host specific
 
     security.polkit.enable = true;
     nixpkgs.config.allowUnfree = true;
-
+  
     fonts.packages = with pkgs; [
      (nerdfonts.override { fonts = [ "FiraCode" ]; })
      font-awesome
@@ -153,7 +153,7 @@ home-manager configs
         prismlauncher
         firefox
         signal-desktop
-        # yubioath-flutter
+        yubioath-flutter
         # skypeforlinux
         pavucontrol
         emacs29-pgtk
@@ -310,6 +310,12 @@ Specific home-manager configs for my framework
           # Launch Firefox on start
           {command = "firefox";}
         ];
+        fonts = {                                                                                                                                                                     
+          names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
+          style = "Regular";
+          size = 11.0;
+        };    
+
         bars = [
           {
             fonts = {
@@ -518,7 +524,7 @@ Specific home-manager configs for my framework
             {
               block = "memory";
               format = " $icon $mem_used_percents ";
-              format_alt = " $icon $swap_used_percents ";
+              format_alt = " $icon SWAP $swap_used_percents ";
             }
             {
               block = "cpu";

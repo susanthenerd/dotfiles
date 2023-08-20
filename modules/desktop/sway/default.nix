@@ -9,6 +9,12 @@
         # Launch Firefox on start
         {command = "firefox";}
       ];
+      fonts = {                                                                                                                                                                     
+        names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
+        style = "Regular";
+        size = 11.0;
+      };    
+
       bars = [
         {
           fonts = {
@@ -16,7 +22,7 @@
             style = "Regular";
             size = 11.0;
           };
-          position = "top";
+          position = "bottom";
           statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";
           # colors={
           #  separator = "#666666";
