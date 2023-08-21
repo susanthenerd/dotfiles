@@ -1,5 +1,6 @@
 {config, lib, pkgs, ... }:
 {
+  imports = [(../../programs/i3status-rust)];
   wayland.windowManager.sway = {
     enable = true;
     config = rec {
@@ -8,6 +9,7 @@
       startup = [
         # Launch Firefox on start
         {command = "firefox";}
+        {command = "signal-desktop";}
       ];
       fonts = {                                                                                                                                                                     
         names = [ "FiraCode Nerd Font Mono" "FontAwesome"];

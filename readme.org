@@ -57,6 +57,7 @@ General configurations that used on all hosts + folders for host specific
   
         home-manager.nixosModules.home-manager {
           home-manager.useUserPackages = true;
+          home-manager.useGlobalPkgs = true;
 
           home-manager.users.susan = {
             imports = [(import ./home.nix)] ++ [(import ./framework/home.nix)];
@@ -154,7 +155,8 @@ home-manager configs
         firefox
         signal-desktop
         yubioath-flutter
-        # skypeforlinux
+        skypeforlinux
+        discord
         pavucontrol
         emacs29-pgtk
         pinentry-curses
@@ -287,8 +289,7 @@ Specific home-manager configs for my framework
   { config, lib, pkgs, ... }:
   {
     imports = [(import ../../modules/desktop/sway)]
-    ++ [(import ../../modules/programs/foot)]
-    ++ [(import ../../modules/programs/i3status-rust)];
+    ++ [(import ../../modules/programs/foot)];
     programs = {
       obs-studio.enable = true;
     };
@@ -301,6 +302,7 @@ Specific home-manager configs for my framework
 #+begin_src nix :tangle ./modules/desktop/sway/default.nix
   {config, lib, pkgs, ... }:
   {
+    imports = [(../../programs/i3status-rust)];
     wayland.windowManager.sway = {
       enable = true;
       config = rec {
@@ -309,6 +311,7 @@ Specific home-manager configs for my framework
         startup = [
           # Launch Firefox on start
           {command = "firefox";}
+          {command = "signal-desktop";}
         ];
         fonts = {                                                                                                                                                                     
           names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
@@ -461,6 +464,7 @@ Specific home-manager configs for my framework
         "rebuild" = "sudo nixos-rebuild switch --flake .";
         "flake-check" = "nix flake check";
       };
+      shellInit = "set -g fish_greeting";
     };
   }
 #+end_src

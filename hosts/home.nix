@@ -15,7 +15,8 @@
       firefox
       signal-desktop
       yubioath-flutter
-      # skypeforlinux
+      skypeforlinux
+      discord
       pavucontrol
       emacs29-pgtk
       pinentry-curses
