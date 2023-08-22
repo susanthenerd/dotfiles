@@ -21,6 +21,7 @@
       emacs29-pgtk
       pinentry-curses
       fuzzel
+      htop
     ];
     # pointerCursor = {                         # This will set cursor system-wide so applications can not choose their own
     #  gtk.enable = true;
