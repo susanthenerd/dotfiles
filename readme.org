@@ -162,6 +162,7 @@ home-manager configs
         pinentry-curses
         fuzzel
         htop
+        gimp
       ];
       # pointerCursor = {                         # This will set cursor system-wide so applications can not choose their own
       #  gtk.enable = true;
@@ -437,6 +438,9 @@ Specific home-manager configs for my framework
           eDP-1 = {
             scale = "1";
 	  };
+          DP-1 = {
+            scale = "1";
+          };
 	};
       };
     };

@@ -22,6 +22,7 @@
       pinentry-curses
       fuzzel
       htop
+      gimp
     ];
     # pointerCursor = {                         # This will set cursor system-wide so applications can not choose their own
     #  gtk.enable = true;
