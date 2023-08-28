@@ -19,39 +19,54 @@ Generate the flake.nix directly from org
         url = "github:nix-community/home-manager";
         inputs.nixpkgs.follows = "nixpkgs";
       };
+  
+      emacs-overlay = {
+        url = "github:nix-community/emacs-overlay";
+      };
     };
   
-    outputs = inputs @ {self, nixpkgs, home-manager, ...} :
+    outputs = inputs @ {self, nixpkgs, home-manager, emacs-overlay, ...} :
     {
       nixosConfigurations = (
         import ./hosts {
           inherit (nixpkgs) lib;
-          inherit inputs nixpkgs home-manager;
+          inherit inputs nixpkgs home-manager emacs-overlay;
         }
       );
     };
   }
 #+end_src
+* Emacs
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/programs/emacs/config.el
+:END:
+
+The actual emacs config that is going to be imported by home-manager. Mostly done following DTs guide on Configuring Emacs
+
+** General settings
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-screen t)
+(setq initial-scratch-message "Hello, Susan!")
+#+END_SRC
 
 * Hosts
 General configurations that used on all hosts + folders for host specific
 ** default.nix
 #+begin_src nix :tangle ./hosts/default.nix
-  { lib, inputs, nixpkgs, home-manager, ... }:
+  { lib, inputs, nixpkgs, home-manager, emacs-overlay, ... }:
   let
     system = "x86_64_linux";
-  
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-    };
 
     lib = nixpkgs.lib;
   in
   {
     framework = lib.nixosSystem {
       inherit system;
+  
       modules = [
+         { nixpkgs.overlays = [ emacs-overlay.overlay ];
+           nixpkgs.config.allowUnfree = true;
+         }
         ./framework
         ./configuration.nix
   
@@ -76,7 +91,6 @@ General configurations that used on all hosts + folders for host specific
     boot.kernelPackages = pkgs.linuxPackages_latest;
 
     security.polkit.enable = true;
-    nixpkgs.config.allowUnfree = true;
   
     fonts.packages = with pkgs; [
      (nerdfonts.override { fonts = [ "FiraCode" ]; })
@@ -141,7 +155,8 @@ home-manager configs
   { config, lib, pkgs, ... }:
   { 
     imports =
-    [(import ../modules/programs/exa)]
+    [(import ../modules/programs/emacs)]
+    ++ [(import ../modules/programs/exa)]
     ++ [(import ../modules/programs/fish)]
     ++ [(import ../modules/programs/git)]
     ++ [(import ../modules/programs/starship)];
@@ -155,10 +170,7 @@ home-manager configs
         firefox
         signal-desktop
         yubioath-flutter
-        skypeforlinux
-        discord
         pavucontrol
-        emacs29-pgtk
         pinentry-curses
         fuzzel
         htop
@@ -447,6 +459,30 @@ Specific home-manager configs for my framework
   }
 #+end_src
 ** Programs
+*** Emacs
+This is home-manager specific things
+#+begin_src nix :tangle ./modules/programs/emacs/default.nix
+  {config, lib, pkgs, ... }:
+  let  
+    myEmacs = pkgs.emacsWithPackagesFromUsePackage {                                      
+      config = ./config.el;                                                               
+      defaultInitFile = true;                                                             
+      package = pkgs.emacs-pgtk;                                                          
+    };  
+  in
+  {
+    programs.emacs = {
+      enable = true;
+      package = myEmacs;
+    };
+    services.emacs = {
+      enable = true;
+      package = myEmacs;
+      client.enable = true;
+      defaultEditor = true;
+    };
+  }
+#+end_src
 *** Exa
 #+begin_src nix :tangle ./modules/programs/exa/default.nix
   {config, lib, pkgs, ... }:

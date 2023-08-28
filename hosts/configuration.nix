@@ -5,7 +5,6 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   security.polkit.enable = true;
-  nixpkgs.config.allowUnfree = true;
 
   fonts.packages = with pkgs; [
    (nerdfonts.override { fonts = [ "FiraCode" ]; })

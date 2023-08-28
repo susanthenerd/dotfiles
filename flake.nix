@@ -8,14 +8,18 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    emacs-overlay = {
+      url = "github:nix-community/emacs-overlay";
+    };
   };
 
-  outputs = inputs @ {self, nixpkgs, home-manager, ...} :
+  outputs = inputs @ {self, nixpkgs, home-manager, emacs-overlay, ...} :
   {
     nixosConfigurations = (
       import ./hosts {
         inherit (nixpkgs) lib;
-        inherit inputs nixpkgs home-manager;
+        inherit inputs nixpkgs home-manager emacs-overlay;
       }
     );
   };

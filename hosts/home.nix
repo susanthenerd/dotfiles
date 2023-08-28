@@ -1,7 +1,8 @@
 { config, lib, pkgs, ... }:
 { 
   imports =
-  [(import ../modules/programs/exa)]
+  [(import ../modules/programs/emacs)]
+  ++ [(import ../modules/programs/exa)]
   ++ [(import ../modules/programs/fish)]
   ++ [(import ../modules/programs/git)]
   ++ [(import ../modules/programs/starship)];
@@ -15,10 +16,7 @@
       firefox
       signal-desktop
       yubioath-flutter
-      skypeforlinux
-      discord
       pavucontrol
-      emacs29-pgtk
       pinentry-curses
       fuzzel
       htop
