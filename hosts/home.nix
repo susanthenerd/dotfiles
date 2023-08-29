@@ -39,18 +39,14 @@
     neovim.enable = true;
   };
 
-  #gtk = {                                     # Theming
-  #  enable = true;
+  gtk = {
+    enable = true;
   #  theme = {
   #    name = "Gruvbox-Dark";
   #    package = pkgs.gruvbox-dark-gtk;
   #  };
-  #  iconTheme = {
-  #    name = "Papirus-Dark";
-  #    package = pkgs.papirus-icon-theme;
-  #  };
-  #  font = {
-  #    name = "FiraCode Nerd Font Mono Medium";
-  #  };                                        # Cursor is declared under home.pointerCursor 
-  #};
+    font = {
+      name = "FiraCode Nerd Font Mono";
+    };
+  };
 }

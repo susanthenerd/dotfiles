@@ -9,7 +9,9 @@ in
     inherit system;
 
     modules = [
-       { nixpkgs.overlays = [ emacs-overlay.overlay ];
+       { nixpkgs.overlays = [
+           emacs-overlay.overlay
+         ];
          nixpkgs.config.allowUnfree = true;
        }
       ./framework

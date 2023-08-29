@@ -9,6 +9,7 @@
   fonts.packages = with pkgs; [
    (nerdfonts.override { fonts = [ "FiraCode" ]; })
    font-awesome
+   fira
   ];
 
   services = {
@@ -34,6 +35,7 @@
   ];
 
   programs = {
+    dconf.enable = true;
     fish.enable = true;
   };
 
@@ -42,17 +44,17 @@
   networking.networkmanager.enable = true;
 
   system = {
-    autoUpgrade = {
-      enable = true;
-      dates = "02:00";
-      persistent = true;
-      flake = "github:susanthenerd/dotfiles";
-      allowReboot = true;
-      rebootWindow = {
-        lower = "02:00";
-        upper = "04:00";
-      };
-    }; 
+    #autoUpgrade = {
+    #  enable = true;
+    #  dates = "02:00";
+    #  persistent = true;
+    #  flake = "github:susanthenerd/dotfiles";
+    #  allowReboot = true;
+    #  rebootWindow = {
+    #    lower = "02:00";
+    #    upper = "04:00";
+    #  };
+    #}; 
     # This value determines the NixOS release from which the default
     # settings for stateful data, like file locations and database versions
     # on your system were taken. It's perfectly fine and recommended to leave

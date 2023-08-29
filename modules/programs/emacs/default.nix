@@ -2,7 +2,8 @@
 let  
   myEmacs = pkgs.emacsWithPackagesFromUsePackage {                                      
     config = ./config.el;                                                               
-    defaultInitFile = true;                                                             
+    defaultInitFile = true;
+    alwaysEnsure = true;
     package = pkgs.emacs-pgtk;                                                          
   };  
 in
@@ -11,10 +12,10 @@ in
     enable = true;
     package = myEmacs;
   };
-  services.emacs = {
-    enable = true;
-    package = myEmacs;
-    client.enable = true;
-    defaultEditor = true;
-  };
+  # services.emacs = {
+  #  enable = true;
+  #  package = myEmacs;
+  #  client.enable = true;
+  #  defaultEditor = true;
+  # };
 }
