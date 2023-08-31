@@ -12,10 +12,10 @@ in
     enable = true;
     package = myEmacs;
   };
-  # services.emacs = {
-  #  enable = true;
-  #  package = myEmacs;
-  #  client.enable = true;
-  #  defaultEditor = true;
-  # };
+  services.emacs = {
+    enable = true;
+    package = myEmacs;
+    client.enable = true;
+    defaultEditor = true;
+  };
 }

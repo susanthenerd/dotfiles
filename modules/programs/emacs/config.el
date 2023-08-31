@@ -183,6 +183,8 @@
   ;;  "br" '(revert-buffer :wk "Reload buffer"))
 )
 
+(setq make-pointer-invisible nil)
+
 (use-package gruvbox-theme
 :ensure t
 :config
@@ -196,7 +198,6 @@
 (global-display-line-numbers-mode 1)
 (global-visual-line-mode t)
 
-;; Enable rich annotations using the Marginalia package
 (use-package marginalia
   ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
   ;; available in the *Completions* buffer, add it to the
@@ -204,12 +205,7 @@
   ;; :bind (:map minibuffer-local-map
   ;;      ("M-A" . marginalia-cycle))
 
-  ;; The :init section is always executed.
   :init
-
-  ;; Marginalia must be activated in the :init section of use-package such that
-  ;; the mode gets enabled right away. Note that this forces loading the
-  ;; package.
   (marginalia-mode))
 
 (use-package nix-mode
@@ -232,8 +228,16 @@
 (use-package org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
-;; Enable vertico
-  (use-package vertico
+(use-package org-appear
+  :commands (org-appear-mode)
+  :hook (org-mode . org-appear-mode)
+  :init
+  (setq org-hide-emphasis-markers t		;; A default setting that needs to be t for org-appear
+        org-appear-autoemphasis t		;; Enable org-appear on emphasis (bold, italics, etc)
+        org-appear-autolinks t  		;; Don't enable on links
+        org-appear-autosubmarkers t))           ;; Enable on subscript and superscript
+
+(use-package vertico
   :init
   (vertico-mode)
 
@@ -244,7 +248,7 @@
   ;; (setq vertico-count 20)
 
   ;; Grow and shrink the Vertico minibuffer
-  ;; (setq vertico-resize t)
+  (setq vertico-resize t)
 
   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
   ;; (setq vertico-cycle t)
@@ -255,7 +259,6 @@
   :init
   (savehist-mode))
 
-;; A few more useful configurations...
 (use-package emacs
   :init
   ;; Add prompt indicator to `completing-read-multiple'.
@@ -274,7 +277,6 @@
         '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
-  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
   ;; Vertico commands are hidden in normal buffers.
   ;; (setq read-extended-command-predicate
   ;;       #'command-completion-default-include-p)
