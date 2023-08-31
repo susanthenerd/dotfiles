@@ -5,6 +5,7 @@
   ++ [(import ../modules/programs/exa)]
   ++ [(import ../modules/programs/fish)]
   ++ [(import ../modules/programs/git)]
+  ++ [(import ../modules/programs/mako)]
   ++ [(import ../modules/programs/starship)];
 
   home = {
@@ -39,6 +40,13 @@
     neovim.enable = true;
   };
 
+  services = {
+    kdeconnect = {
+      enable = true;
+      indicator = true;
+    };
+  };
+
   gtk = {
     enable = true;
   #  theme = {
@@ -46,7 +54,7 @@
   #    package = pkgs.gruvbox-dark-gtk;
   #  };
     font = {
-      name = "FiraCode Nerd Font Mono";
+      name = "Fira Sans";
     };
   };
 }

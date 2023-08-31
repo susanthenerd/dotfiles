@@ -39,6 +39,16 @@
 
   networking.useDHCP = lib.mkDefault true;
 
+  networking.firewall = {
+    enable = true;
+  #  # 1714 to 1764 are used by kdeconnect
+  #  # 21027 and 22000 are used by syncthing
+  #  allowedTCPPorts = [ 22000 ];
+  #  allowedUDPPorts = [ 22000 21027 ];
+  #  allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
+  #  allowedUDPPortRanges = [ { from = 1714; to = 1764; } ];
+  };
+
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   hardware = {

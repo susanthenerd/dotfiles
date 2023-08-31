@@ -37,9 +37,20 @@
   programs = {
     dconf.enable = true;
     fish.enable = true;
+    # kdeconnect.enable = true;
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix = {
+    settings = {
+      experimental-features = [ "nix-command" "flakes" ];
+      auto-optimise-store = true;
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 15d";
+    };
+  };
 
   networking.networkmanager.enable = true;
 

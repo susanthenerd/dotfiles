@@ -11,7 +11,7 @@
         {command = "firefox";}
         {command = "signal-desktop";}
       ];
-      fonts = {                                                                                                                                                                     
+      fonts = {                                                                            
         names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
         style = "Regular";
         size = 11.0;
