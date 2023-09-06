@@ -4,17 +4,22 @@
 #+AUTHOR: Susan
 #+EMAIL: susan@susan.lol
 #+DESCRIPTION: My personal dotfiles configured using org mode, nixos, home-manager and emacs
+#+TODO: TODO(t) IN-PROGRESS(i) WAITING(w) | DONE(d)
 
 * Table of contents :toc:
 - [[#flakenix][flake.nix]]
 - [[#emacs][Emacs]]
   - [[#making-sure-packages-are-got-from-nix][Making sure packages are got from Nix]]
+  - [[#bind-key][Bind key]]
   - [[#consult][Consult]]
+  - [[#clang-format][Clang-format]]
   - [[#corfu][Corfu]]
+  - [[#direnv][direnv]]
   - [[#fonts][Fonts]]
   - [[#gui][GUI]]
+  - [[#display-line-numbers-and-truncated-lines][Display Line Numbers and Truncated Lines]]
+  - [[#lsp-mode][LSP mode]]
   - [[#marginalia][Marginalia]]
-  - [[#meow][Meow]]
   - [[#nix-mode][Nix Mode]]
   - [[#orderless][Orderless]]
   - [[#org-mode][Org Mode]]
@@ -75,63 +80,67 @@ The actual emacs config that is going to be imported by home-manager
 #+BEGIN_SRC emacs-lisp
   (setq package-enable-at-startup nil)
 #+END_SRC
+** Bind key
+#+begin_src emacs-lisp
+(require 'bind-key)
+#+end_src
 
 ** Consult
 [[https://github.com/minad/consult][Consult]] provides search and navigation commands based on the Emacs completion function completing-read. 
 #+begin_src emacs-lisp
   (use-package consult
     ;; Replace bindings. Lazily loaded due by `use-package'.
-    ;; :bind (;; C-c bindings in `mode-specific-map'
-    ;;        ("C-c M-x" . consult-mode-command)
-    ;;        ("C-c h" . consult-history)
-    ;;        ("C-c k" . consult-kmacro)
-    ;;        ("C-c m" . consult-man)
-    ;;        ("C-c i" . consult-info)
-    ;;        ([remap Info-search] . consult-info)
-    ;;        ;; C-x bindings in `ctl-x-map'
-    ;;        ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-    ;;        ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-    ;;        ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-    ;;        ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-    ;;        ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-    ;;        ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
-    ;;        ;; Custom M-# bindings for fast register access
-    ;;        ("M-#" . consult-register-load)
-    ;;        ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-    ;;        ("C-M-#" . consult-register)
-    ;;        ;; Other custom bindings
-    ;;        ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-    ;;        ;; M-g bindings in `goto-map'
-    ;;        ("M-g e" . consult-compile-error)
-    ;;        ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-    ;;        ("M-g g" . consult-goto-line)             ;; orig. goto-line
-    ;;        ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-    ;;        ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-    ;;        ("M-g m" . consult-mark)
-    ;;        ("M-g k" . consult-global-mark)
-    ;;        ("M-g i" . consult-imenu)
-    ;;        ("M-g I" . consult-imenu-multi)
-    ;;        ;; M-s bindings in `search-map'
-    ;;        ("M-s d" . consult-find)
-    ;;        ("M-s D" . consult-locate)
-    ;;        ("M-s g" . consult-grep)
-    ;;        ("M-s G" . consult-git-grep)
-    ;;        ("M-s r" . consult-ripgrep)
-    ;;        ("M-s l" . consult-line)
-    ;;        ("M-s L" . consult-line-multi)
-    ;;        ("M-s k" . consult-keep-lines)
-    ;;        ("M-s u" . consult-focus-lines)
-    ;;        ;; Isearch integration
-    ;;        ("M-s e" . consult-isearch-history)
-    ;;        :map isearch-mode-map
-    ;;        ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-    ;;        ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-    ;;        ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-    ;;        ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
-    ;;        ;; Minibuffer history
-    ;;        :map minibuffer-local-map
-    ;;        ("M-s" . consult-history)                 ;; orig. next-matching-history-element
-    ;;        ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+    :bind (;; C-c bindings in `mode-specific-map'
+            ("C-c M-x" . consult-mode-command)
+            ("C-c h" . consult-history)
+            ("C-c k" . consult-kmacro)
+            ("C-c m" . consult-man)
+            ("C-c i" . consult-info)
+            ([remap Info-search] . consult-info)
+            ;; C-x bindings in `ctl-x-map'
+            ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+            ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+            ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+            ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+            ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+            ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+            ;; Custom M-# bindings for fast register access
+            ("M-#" . consult-register-load)
+            ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+            ("C-M-#" . consult-register)
+            ;; Other custom bindings
+            ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+            ;; M-g bindings in `goto-map'
+            ("M-g e" . consult-compile-error)
+            ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+            ("M-g g" . consult-goto-line)             ;; orig. goto-line
+            ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+            ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+            ("M-g m" . consult-mark)
+            ("M-g k" . consult-global-mark)
+            ("M-g i" . consult-imenu)
+            ("M-g I" . consult-imenu-multi)
+            ;; M-s bindings in `search-map'
+            ("M-s d" . consult-find)
+            ("M-s D" . consult-locate)
+            ("M-s g" . consult-grep)
+            ("M-s G" . consult-git-grep)
+            ("M-s r" . consult-ripgrep)
+            ("M-s l" . consult-line)
+            ("M-s L" . consult-line-multi)
+            ("M-s k" . consult-keep-lines)
+            ("M-s u" . consult-focus-lines)
+            ;; Isearch integration
+            ("M-s e" . consult-isearch-history)
+            :map isearch-mode-map
+            ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+            ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+            ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+            ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+            ;; Minibuffer history
+           :map minibuffer-local-map
+            ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+            ("M-r" . consult-history))                ;; orig. previous-matching-history-element
 
     ;; Enable automatic preview at point in the *Completions* buffer. This is
     ;; relevant when you use the default completion UI.
@@ -198,9 +207,61 @@ The actual emacs config that is going to be imported by home-manager
   )
 #+end_src
 
-** Corfu
+** Clang-format
+#+begin_src emacs-lisp
+(use-package clang-format
+  :ensure t
+  :hook (c++-mode . (lambda () (add-hook 'before-save-hook #'clang-format-buffer nil t))))
+#+end_src
+
+** IN-PROGRESS Corfu
 [[https://github.com/minad/corfu][Corfu]] 
 #+begin_src emacs-lisp
+(use-package corfu
+  ;; Optional customizations
+  :custom
+  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto t)                 ;; Enable auto completion
+  ;; (corfu-separator ?\s)          ;; Orderless field separator
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+
+  ;; Enable Corfu only for certain modes.
+  ;; :hook ((prog-mode . corfu-mode)
+  ;;        (shell-mode . corfu-mode)
+  ;;        (eshell-mode . corfu-mode))
+
+  ;; Recommended: Enable Corfu globally.
+  ;; This is recommended since Dabbrev can be used globally (M-/).
+  ;; See also `global-corfu-modes'.
+  :init
+  (global-corfu-mode))
+
+;; A few more useful configurations...
+(use-package emacs
+  :init
+  ;; TAB cycle if there are only few candidates
+  (setq completion-cycle-threshold 3)
+
+  ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+  ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+  ;; (setq read-extended-command-predicate
+  ;;       #'command-completion-default-include-p)
+
+  ;; Enable indentation+completion using the TAB key.
+  ;; `completion-at-point' is often bound to M-TAB.
+  (setq tab-always-ident 'complete))
+#+end_src
+
+** direnv
+#+begin_src emacs-lisp
+(use-package direnv
+ :config
+ (direnv-mode))
 #+end_src
 
 ** Fonts
@@ -264,10 +325,31 @@ I don't use the pointer so lets hide it
 (scroll-bar-mode -1)
 #+end_src
 
-*** Display Line Numbers and Truncated Lines
+** Display Line Numbers and Truncated Lines
 #+begin_src emacs-lisp
 (global-display-line-numbers-mode 1)
 (global-visual-line-mode t)
+#+end_src
+
+** IN-PROGRESS LSP mode
+#+begin_src emacs-lisp
+(use-package lsp-mode
+  :ensure t
+  :custom
+  (lsp-completion-provider :none)  ;; disable built-in completion, using Corfu
+  :init
+  (defun my/lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless)))  ;; configure flex completion
+  :hook ((lsp-mode . lsp-enable-which-key-integration)
+         (lsp-completion-mode . my/lsp-mode-setup-completion)
+         (c++-mode . lsp-deferred)))  ;; enable lsp-mode for C++
+
+;; Optional: lsp-ui for better UI (but can be omitted)
+(use-package lsp-ui
+  :ensure t
+  :hook (lsp-mode . lsp-ui-mode))
+
 #+end_src
 
 ** Marginalia
@@ -278,103 +360,11 @@ I don't use the pointer so lets hide it
   ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
   ;; available in the *Completions* buffer, add it to the
   ;; `completion-list-mode-map'.
-  ;; :bind (:map minibuffer-local-map
-  ;;      ("M-A" . marginalia-cycle))
+  :bind (:map minibuffer-local-map
+        ("M-A" . marginalia-cycle))
 
   :init
   (marginalia-mode))
-#+end_src
-
-** Meow
-[[https://github.com/meow-edit/meow][Meow]] is yet another modal editing on Emacs
-#+begin_src emacs-lisp :tangle no
-(use-package meow  
-  :config
-    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-  (meow-motion-overwrite-define-key
-   '("j" . meow-next)
-   '("k" . meow-prev)
-   '("<escape>" . ignore))
-
-
-;; Using leader define key as an alternative to general.el
-  (meow-leader-define-key
-   ;; SPC j/k will run the original command in MOTION state.
-   '("j" . "H-j")
-   '("k" . "H-k")
-
-   
-   
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("-" . negative-argument)
-   '(";" . meow-reverse)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
-   '("[" . meow-beginning-of-thing)
-   '("]" . meow-end-of-thing)
-   '("a" . meow-append)
-   '("A" . meow-open-below)
-   '("b" . meow-back-word)
-   '("B" . meow-back-symbol)
-   '("c" . meow-change)
-   '("d" . meow-delete)
-   '("D" . meow-backward-delete)
-   '("e" . meow-next-word)
-   '("E" . meow-next-symbol)
-   '("f" . meow-find)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("i" . meow-insert)
-   '("I" . meow-open-above)
-   '("j" . meow-next)
-   '("J" . meow-next-expand)
-   '("k" . meow-prev)
-   '("K" . meow-prev-expand)
-   '("l" . meow-right)
-   '("L" . meow-right-expand)
-   '("m" . meow-join)
-   '("n" . meow-search)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("p" . meow-yank)
-   '("q" . meow-quit)
-   '("Q" . meow-goto-line)
-   '("r" . meow-replace)
-   '("R" . meow-swap-grab)
-   '("s" . meow-kill)
-   '("t" . meow-till)
-   '("u" . meow-undo)
-   '("U" . meow-undo-in-selection)
-   '("v" . meow-visit)
-   '("w" . meow-mark-word)
-   '("W" . meow-mark-symbol)
-   '("x" . meow-line)
-   '("X" . meow-goto-line)
-   '("y" . meow-save)
-   '("Y" . meow-sync-grab)
-   '("z" . meow-pop-selection)
-   '("'" . repeat)
-   '("<escape>" . ignore))
-
-  ;; Setup indicator
-  (meow-setup-indicator)
-
-  (meow-global-mode 1))
-
 #+end_src
 
 ** Nix Mode
@@ -395,11 +385,15 @@ I don't use the pointer so lets hide it
         completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 
-** Org Mode
+** IN-PROGRESS Org Mode
 *** Disable org electric ident
 #+begin_src emacs-lisp
 (electric-indent-mode -1)
 (setq org-edit-src-content-indentation 0)
+#+end_src
+*** Asociate all org files with org mode
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 #+end_src
 
 *** Enabling Table of Contents
@@ -420,16 +414,29 @@ Org-bullets gives us attractive bullets rather than asterisks.
 
 *** Org-appear
 #+begin_src emacs-lisp
-  (use-package org-appear
-    :commands (org-appear-mode)
-    :hook (org-mode . org-appear-mode)
-    :init
-    (setq org-hide-emphasis-markers t		;; A default setting that needs to be t for org-appear
-          org-appear-autoemphasis t		;; Enable org-appear on emphasis (bold, italics, etc)
-          org-appear-autolinks t  		;; Don't enable on links
-          org-appear-autosubmarkers t))           ;; Enable on subscript and superscript
+(use-package org-appear
+  :commands (org-appear-mode)
+  :hook (org-mode . org-appear-mode)  
+  :init
+  (setq org-hide-emphasis-markers t       ;; A default setting that needs to be t for org-appear
+        org-appear-autoemphasis t	        ;; Enable org-appear on emphasis (bold, italics, etc)
+        org-appear-autolinks t  	        ;; Enable on links
+        org-appear-autosubmarkers t))     ;; Enable on subscript and superscript
 #+end_src
 
+*** Org todo states
+#+begin_src emacs-lisp
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i)" "BLOCKED(b)"  "|" "DONE(d)" "WONT-DO(!)" )))
+#+end_src
+
+*** Org Agenda
+#+begin_src emacs-lisp
+(setq org-agenda-files '("~/org"))
+#+end_src
+
+**** TODO Org super agenda
+*** IN-PROGRESS Add org capture
 ** Vertico
 [[https://github.com/minad/vertico][Vertico]] provides a performant and minimalistic vertical completion UI based on the default completion system.
 #+begin_src emacs-lisp
@@ -668,6 +675,11 @@ home-manager configs
 
   programs = {
     home-manager.enable = true;
+    direnv = {
+      enable = true;
+      enableBashIntegration = true;
+      nix-direnv.enable = true;
+    };
   };
 
   services = {
@@ -792,6 +804,7 @@ Specific home-manager configs for my framework
   };
 
   home.packages = with pkgs; [
+    jetbrains.clion
     firefox
     signal-desktop
     yubioath-flutter
@@ -918,6 +931,11 @@ Specific home-manager configs for my framework
         "${modifier}+Shift+7" = "move container to workspace number 7"; 
         "${modifier}+Shift+8" = "move container to workspace number 8";
         "${modifier}+Shift+9" = "move container to workspace number 9";
+
+
+        "Print" = "exec grim -q 100 ~/Pictures/screenshot-$(date +'%Y-%m-%d-%H-%M-%S' ).png";
+        "${modifier}+Print" = "exec slurp | grim -g - -q 100 ~/Pictures/screenshot-$(date +'%Y-%m-%d-%H-%M-%S' ).png";
+
 
         # Resize
         "${modifier}+r" = "mode resize";
@@ -1146,57 +1164,57 @@ File sync to my phone
 * Github Actions
 ** automate daily version bump
 #+begin_src yaml :tangle ./.github/workflows/auto-version-bump.yaml
-  name: Daily Nix Flake Version Bump
+name: Daily Nix Flake Version Bump
 
-  on:
-    schedule:
-      - cron:  '0 0 * * *'
+on:
+  schedule:
+    - cron:  '0 0 * * *'
 
-  jobs:
-    flake_update:
-      runs-on: ubuntu-latest
+jobs:
+  flake_update:
+    runs-on: ubuntu-latest
 
-      steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
-      - name: Setup Nix
-        uses: cachix/install-nix-action@v16
+    - name: Setup Nix
+      uses: cachix/install-nix-action@v22
 
-      - name: Update Flake
-        run: |
-          nix flake update
-          if nix flake check; then
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git add flake.lock
-            git commit -m "automated daily version bump"
-            git push
-          fi
+    - name: Update Flake
+      run: |
+        nix flake update
+        if nix flake check; then
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add flake.lock
+          git commit -m "automated daily version bump"
+          git push
+        fi
 #+end_src
 
 ** automated nix flake check on push
 #+begin_src yaml :tangle ./.github/workflows/auto-commit-check.yaml
-  name: Nix Flake Check On Commit
+name: Nix Flake Check On Commit
   
-  on:
-    push:
-      branches:
-        - '**'
+on:
+  push:
+    branches:
+      - '**'
+ 
+jobs:
+  flake_check:
+    runs-on: ubuntu-latest
   
-  jobs:
-    flake_check:
-      runs-on: ubuntu-latest
-  
-      steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
-      - name: Setup Nix
-        uses: cachix/install-nix-action@v22
+    - name: Setup Nix
+      uses: cachix/install-nix-action@v22
 
-      - name: Nix Flake Check
-        run: nix flake check
+    - name: Nix Flake Check
+      run: nix flake check
 #+end_src
 
  

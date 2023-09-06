@@ -108,6 +108,11 @@
         "${modifier}+Shift+8" = "move container to workspace number 8";
         "${modifier}+Shift+9" = "move container to workspace number 9";
 
+
+        "Print" = "exec grim -q 100 ~/Pictures/screenshot-$(date +'%Y-%m-%d-%H-%M-%S' ).png";
+        "${modifier}+Print" = "exec slurp | grim -g - -q 100 ~/Pictures/screenshot-$(date +'%Y-%m-%d-%H-%M-%S' ).png";
+
+
         # Resize
         "${modifier}+r" = "mode resize";
 

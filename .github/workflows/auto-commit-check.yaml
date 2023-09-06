@@ -1,14 +1,14 @@
 name: Nix Flake Check On Commit
-
+  
 on:
   push:
     branches:
       - '**'
-
+ 
 jobs:
   flake_check:
     runs-on: ubuntu-latest
-
+  
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
