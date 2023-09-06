@@ -96,7 +96,7 @@
    :preview-key '(:debounce 0.4 any))
 
   ;; Optionally configure the narrowing key.
-  ;; Both < and C-+ work reasonably well.
+  ;; Both  and C-+ work reasonably well.
   (setq consult-narrow-key "<") ;; "C-+"
 
   ;; Optionally make narrowing help available in the minibuffer.
@@ -119,21 +119,6 @@
 )
 
 
-
-(use-package evil
-    :init      ;; tweak evil's configuration before loading it
-    (setq evil-want-integration t  ;; This is optional since it's already set to t by default.
-	  evil-want-keybinding nil
-	  evil-vsplit-window-right t
-	  evil-split-window-below t
-	  evil-undo-system 'undo-redo)  ;; Adds vim-like C-r redo functionality
-    (evil-mode))
-  (use-package evil-collection
-    :after evil
-    :config
-    (setq evil-collection-mode-list '(dashboard dired ibuffer))
-    (evil-collection-init))
-  (use-package evil-tutor)
 
 (set-face-attribute 'default nil
   :font "FiraCode Nerd Font Mono"
@@ -163,33 +148,14 @@
 ;; Uncomment the following line if line spacing needs adjusting.
 (setq-default line-spacing 0.12)
 
-(use-package general
-  :config
-  (general-evil-setup)
-
-  ;; set up 'SPC' as the global leader key
-  ;; (general-create-definer dt/leader-keys
-  ;;  :states '(normal insert visual emacs)
-  ;;  :keymaps 'override
-  ;;  :prefix "SPC" ;; set leader
-  ;;  :global-prefix "M-SPC") ;; access leader in insert mode
-
-  ;; (dt/leader-keys
-  ;;  "b" '(:ignore t :wk "buffer")
-  ;;  "bb" '(switch-to-buffer :wk "Switch buffer")
-  ;;  "bk" '(kill-this-buffer :wk "Kill this buffer")
-  ;;  "bn" '(next-buffer :wk "Next buffer")
-  ;;  "bp" '(previous-buffer :wk "Previous buffer")
-  ;;  "br" '(revert-buffer :wk "Reload buffer"))
-)
+(setq-default cursor-type 'bar)
 
 (setq make-pointer-invisible nil)
 
 (use-package gruvbox-theme
-:ensure t
-:config
-;; Enable the theme
-(load-theme 'gruvbox-dark-medium t))
+  :config
+  ;; Enable the theme
+  (load-theme 'gruvbox-dark-medium t))
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -219,6 +185,9 @@
 (setq completion-styles '(orderless basic)
       completion-category-defaults nil
       completion-category-overrides '((file (styles partial-completion)))))
+
+(electric-indent-mode -1)
+(setq org-edit-src-content-indentation 0)
 
 (use-package toc-org
     :commands toc-org-enable
@@ -256,6 +225,7 @@
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
+  :ensure nil
   :init
   (savehist-mode))
 

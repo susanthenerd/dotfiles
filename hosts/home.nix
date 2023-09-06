@@ -1,11 +1,9 @@
 { config, lib, pkgs, ... }:
 { 
   imports =
-  [(import ../modules/programs/emacs)]
-  ++ [(import ../modules/programs/exa)]
+  [(import ../modules/programs/exa)]
   ++ [(import ../modules/programs/fish)]
   ++ [(import ../modules/programs/git)]
-  ++ [(import ../modules/programs/mako)]
   ++ [(import ../modules/programs/starship)];
 
   home = {
@@ -13,17 +11,11 @@
     homeDirectory = "/home/susan";
 
     packages = with pkgs; [
-      prismlauncher
-      firefox
-      signal-desktop
-      yubioath-flutter
-      pavucontrol
       pinentry-curses
-      fuzzel
+      neofetch
       htop
-      gimp
     ];
-    # pointerCursor = {                         # This will set cursor system-wide so applications can not choose their own
+    # pointerCursor = {# This will set cursor system-wide so applications can not choose their own
     #  gtk.enable = true;
     #  #name = "Dracula-cursors";
     #  name = "Catppuccin-Mocha-Dark-Cursors";
@@ -36,15 +28,9 @@
 
   programs = {
     home-manager.enable = true;
-    fish.enable = true;
-    neovim.enable = true;
   };
 
   services = {
-    kdeconnect = {
-      enable = true;
-      indicator = true;
-    };
   };
 
   gtk = {

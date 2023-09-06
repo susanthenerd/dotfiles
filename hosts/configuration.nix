@@ -7,9 +7,9 @@
   security.polkit.enable = true;
 
   fonts.packages = with pkgs; [
-   (nerdfonts.override { fonts = [ "FiraCode" ]; })
-   font-awesome
-   fira
+    (nerdfonts.override { fonts = [ "FiraCode" ]; })
+    font-awesome
+    fira
   ];
 
   services = {
@@ -22,22 +22,20 @@
   };
 
   users = {
-    mutableUsers = false; 
-    defaultUserShell = pkgs.fish;
-    users.susan = {
-      isNormalUser = true;
-      extraGroups = [ "wheel" "video"];
-      hashedPassword = "$6$vru/Kz/2RFnBeCXQ$FPDE/DET/P2pNfE2bpVsEdDCeMegmeMApE4l3m/2YR9t6qCSrdiTzqUr8aN1gnOTAcYXBQ30NUf3UtqxINmDL.";
-    };
-  };
+   mutableUsers = false; 
+   defaultUserShell = pkgs.fish;
+   users.susan = {
+     isNormalUser = true;
+     extraGroups = [ "wheel" "video"];
+     hashedPassword = "$6$vru/Kz/2RFnBeCXQ$FPDE/DET/P2pNfE2bpVsEdDCeMegmeMApE4l3m/2YR9t6qCSrdiTzqUr8aN1gnOTAcYXBQ30NUf3UtqxINmDL.";
+   };
+ };
 
-  environment.systemPackages = with pkgs; [
-  ];
+  environment.systemPackages = with pkgs; [ ];
 
   programs = {
     dconf.enable = true;
     fish.enable = true;
-    # kdeconnect.enable = true;
   };
 
   nix = {

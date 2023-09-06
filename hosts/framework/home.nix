@@ -1,9 +1,21 @@
 { config, lib, pkgs, ... }:
 {
   imports = [(import ../../modules/desktop/sway)]
-  ++ [(import ../../modules/programs/foot)];
+  ++ [(import ../../modules/programs/emacs)]
+  ++ [(import ../../modules/programs/foot)]
+  ++ [(import ../../modules/programs/mako)];
   programs = {
-    obs-studio.enable = true;
   };
+
+  home.packages = with pkgs; [
+    firefox
+    signal-desktop
+    yubioath-flutter
+    grim
+    slurp
+    pavucontrol
+    qbittorrent
+    fuzzel
+  ];
   xdg.enable = true;
 }

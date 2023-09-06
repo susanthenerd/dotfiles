@@ -11,11 +11,10 @@
   - [[#making-sure-packages-are-got-from-nix][Making sure packages are got from Nix]]
   - [[#consult][Consult]]
   - [[#corfu][Corfu]]
-  - [[#evil-mode][Evil mode]]
   - [[#fonts][Fonts]]
-  - [[#general-keybindings][General Keybindings]]
   - [[#gui][GUI]]
   - [[#marginalia][Marginalia]]
+  - [[#meow][Meow]]
   - [[#nix-mode][Nix Mode]]
   - [[#orderless][Orderless]]
   - [[#org-mode][Org Mode]]
@@ -70,7 +69,7 @@ Generate the flake.nix directly from org
 :header-args:emacs-lisp: :tangle ./modules/programs/emacs/config.el
 :END:
 
-The actual emacs config that is going to be imported by home-manager. Mostly done following DTs guide on Configuring Emacs
+The actual emacs config that is going to be imported by home-manager
 
 ** Making sure packages are got from Nix
 #+BEGIN_SRC emacs-lisp
@@ -176,7 +175,7 @@ The actual emacs config that is going to be imported by home-manager. Mostly don
      :preview-key '(:debounce 0.4 any))
 
     ;; Optionally configure the narrowing key.
-    ;; Both < and C-+ work reasonably well.
+    ;; Both  and C-+ work reasonably well.
     (setq consult-narrow-key "<") ;; "C-+"
 
     ;; Optionally make narrowing help available in the minibuffer.
@@ -202,26 +201,6 @@ The actual emacs config that is going to be imported by home-manager. Mostly don
 ** Corfu
 [[https://github.com/minad/corfu][Corfu]] 
 #+begin_src emacs-lisp
-#+end_src
-
-** Evil mode
-[[https://github.com/emacs-evil/evil][Evil]] is an extensible vi/vim layer for Emacs.  Because...let's face it.  The Vim keybindings are just plain better.
-
-#+begin_src emacs-lisp
-  (use-package evil
-      :init      ;; tweak evil's configuration before loading it
-      (setq evil-want-integration t  ;; This is optional since it's already set to t by default.
-	    evil-want-keybinding nil
-	    evil-vsplit-window-right t
-	    evil-split-window-below t
-	    evil-undo-system 'undo-redo)  ;; Adds vim-like C-r redo functionality
-      (evil-mode))
-    (use-package evil-collection
-      :after evil
-      :config
-      (setq evil-collection-mode-list '(dashboard dired ibuffer))
-      (evil-collection-init))
-    (use-package evil-tutor)
 #+end_src
 
 ** Fonts
@@ -258,41 +237,21 @@ Defining the various fonts that Emacs will use.
 
 #+end_src
 
-** General Keybindings
+** GUI
+*** Cursor
 #+begin_src emacs-lisp
-
-  (use-package general
-    :config
-    (general-evil-setup)
-
-    ;; set up 'SPC' as the global leader key
-    ;; (general-create-definer dt/leader-keys
-    ;;  :states '(normal insert visual emacs)
-    ;;  :keymaps 'override
-    ;;  :prefix "SPC" ;; set leader
-    ;;  :global-prefix "M-SPC") ;; access leader in insert mode
-  
-    ;; (dt/leader-keys
-    ;;  "b" '(:ignore t :wk "buffer")
-    ;;  "bb" '(switch-to-buffer :wk "Switch buffer")
-    ;;  "bk" '(kill-this-buffer :wk "Kill this buffer")
-    ;;  "bn" '(next-buffer :wk "Next buffer")
-    ;;  "bp" '(previous-buffer :wk "Previous buffer")
-    ;;  "br" '(revert-buffer :wk "Reload buffer"))
-  )
+(setq-default cursor-type 'bar)
 #+end_src
 
-** GUI
-*** Coursor
-I don't use the coursor so lets hide it
+*** Pointer
+I don't use the pointer so lets hide it
 #+begin_src emacs-lisp
-  (setq make-pointer-invisible nil)
+(setq make-pointer-invisible nil)
 #+end_src
 
 *** Theme
 #+begin_src emacs-lisp
-  (use-package gruvbox-theme
-  :ensure t
+(use-package gruvbox-theme
   :config
   ;; Enable the theme
   (load-theme 'gruvbox-dark-medium t))
@@ -326,6 +285,98 @@ I don't use the coursor so lets hide it
   (marginalia-mode))
 #+end_src
 
+** Meow
+[[https://github.com/meow-edit/meow][Meow]] is yet another modal editing on Emacs
+#+begin_src emacs-lisp :tangle no
+(use-package meow  
+  :config
+    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-overwrite-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev)
+   '("<escape>" . ignore))
+
+
+;; Using leader define key as an alternative to general.el
+  (meow-leader-define-key
+   ;; SPC j/k will run the original command in MOTION state.
+   '("j" . "H-j")
+   '("k" . "H-k")
+
+   
+   
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("A" . meow-open-below)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("d" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("f" . meow-find)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("I" . meow-open-above)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("m" . meow-join)
+   '("n" . meow-search)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("s" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("v" . meow-visit)
+   '("w" . meow-mark-word)
+   '("W" . meow-mark-symbol)
+   '("x" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("z" . meow-pop-selection)
+   '("'" . repeat)
+   '("<escape>" . ignore))
+
+  ;; Setup indicator
+  (meow-setup-indicator)
+
+  (meow-global-mode 1))
+
+#+end_src
+
 ** Nix Mode
 #+begin_src emacs-lisp
   (use-package nix-mode
@@ -345,6 +396,12 @@ I don't use the coursor so lets hide it
 #+end_src
 
 ** Org Mode
+*** Disable org electric ident
+#+begin_src emacs-lisp
+(electric-indent-mode -1)
+(setq org-edit-src-content-indentation 0)
+#+end_src
+
 *** Enabling Table of Contents
 #+begin_src emacs-lisp
   (use-package toc-org
@@ -376,52 +433,53 @@ Org-bullets gives us attractive bullets rather than asterisks.
 ** Vertico
 [[https://github.com/minad/vertico][Vertico]] provides a performant and minimalistic vertical completion UI based on the default completion system.
 #+begin_src emacs-lisp
-(use-package vertico
-  :init
-  (vertico-mode)
+  (use-package vertico
+    :init
+    (vertico-mode)
 
-  ;; Different scroll margin
-  ;; (setq vertico-scroll-margin 0)
+    ;; Different scroll margin
+    ;; (setq vertico-scroll-margin 0)
 
-  ;; Show more candidates
-  ;; (setq vertico-count 20)
+    ;; Show more candidates
+    ;; (setq vertico-count 20)
 
-  ;; Grow and shrink the Vertico minibuffer
-  (setq vertico-resize t)
+    ;; Grow and shrink the Vertico minibuffer
+    (setq vertico-resize t)
 
-  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-  ;; (setq vertico-cycle t)
-  )
+    ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+    ;; (setq vertico-cycle t)
+    )
 
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-  :init
-  (savehist-mode))
+  ;; Persist history over Emacs restarts. Vertico sorts by history position.
+  (use-package savehist
+    :ensure nil
+    :init
+    (savehist-mode))
 
-(use-package emacs
-  :init
-  ;; Add prompt indicator to `completing-read-multiple'.
-  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-  (defun crm-indicator (args)
-    (cons (format "[CRM%s] %s"
-                  (replace-regexp-in-string
-                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                   crm-separator)
-                  (car args))
-          (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+  (use-package emacs
+    :init
+    ;; Add prompt indicator to `completing-read-multiple'.
+    ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+    (defun crm-indicator (args)
+      (cons (format "[CRM%s] %s"
+                    (replace-regexp-in-string
+                     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                     crm-separator)
+                    (car args))
+            (cdr args)))
+    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+    ;; Do not allow the cursor in the minibuffer prompt
+    (setq minibuffer-prompt-properties
+          '(read-only t cursor-intangible t face minibuffer-prompt))
+    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
-  ;; Vertico commands are hidden in normal buffers.
-  ;; (setq read-extended-command-predicate
-  ;;       #'command-completion-default-include-p)
+    ;; Vertico commands are hidden in normal buffers.
+    ;; (setq read-extended-command-predicate
+    ;;       #'command-completion-default-include-p)
 
-  ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t))  
+    ;; Enable recursive minibuffers
+    (setq enable-recursive-minibuffers t))  
 #+end_src
 
 ** Which-key
@@ -451,6 +509,11 @@ General configurations that used on all hosts + folders for host specific
   { lib, inputs, nixpkgs, home-manager, emacs-overlay, ... }:
   let
     system = "x86_64_linux";
+
+    pkgs = import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;                              # Allow proprietary software
+    };
 
     lib = nixpkgs.lib;
   in
@@ -495,148 +558,132 @@ General configurations that used on all hosts + folders for host specific
 
 ** configuration.nix
 #+begin_src nix :tangle ./hosts/configuration.nix
-    { config, lib, pkgs, ... }:
-    {
-      time.timeZone = "Europe/Bucharest";
+{ config, lib, pkgs, ... }:
+{
+  time.timeZone = "Europe/Bucharest";
 
-      boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
-      security.polkit.enable = true;
+  security.polkit.enable = true;
 
-      fonts.packages = with pkgs; [
-       (nerdfonts.override { fonts = [ "FiraCode" ]; })
-       font-awesome
-       fira
-      ];
+  fonts.packages = with pkgs; [
+    (nerdfonts.override { fonts = [ "FiraCode" ]; })
+    font-awesome
+    fira
+  ];
 
-      services = {
-        udev.packages = [ pkgs.yubikey-personalization ];
-        pcscd.enable = true;
-        pipewire = { 
-          enable = true;
-          pulse.enable = true;
-        }; 
-      };
+  services = {
+    udev.packages = [ pkgs.yubikey-personalization ];
+    pcscd.enable = true;
+    pipewire = { 
+      enable = true;
+      pulse.enable = true;
+    }; 
+  };
 
-      users = {
-        mutableUsers = false; 
-        defaultUserShell = pkgs.fish;
-        users.susan = {
-          isNormalUser = true;
-          extraGroups = [ "wheel" "video"];
-          hashedPassword = "$6$vru/Kz/2RFnBeCXQ$FPDE/DET/P2pNfE2bpVsEdDCeMegmeMApE4l3m/2YR9t6qCSrdiTzqUr8aN1gnOTAcYXBQ30NUf3UtqxINmDL.";
-        };
-      };
+  users = {
+   mutableUsers = false; 
+   defaultUserShell = pkgs.fish;
+   users.susan = {
+     isNormalUser = true;
+     extraGroups = [ "wheel" "video"];
+     hashedPassword = "$6$vru/Kz/2RFnBeCXQ$FPDE/DET/P2pNfE2bpVsEdDCeMegmeMApE4l3m/2YR9t6qCSrdiTzqUr8aN1gnOTAcYXBQ30NUf3UtqxINmDL.";
+   };
+ };
 
-      environment.systemPackages = with pkgs; [
-      ];
+  environment.systemPackages = with pkgs; [ ];
 
-      programs = {
-        dconf.enable = true;
-        fish.enable = true;
-        # kdeconnect.enable = true;
-      };
+  programs = {
+    dconf.enable = true;
+    fish.enable = true;
+  };
 
-      nix = {
-        settings = {
-          experimental-features = [ "nix-command" "flakes" ];
-          auto-optimise-store = true;
-        };
-        gc = {
-          automatic = true;
-          dates = "weekly";
-          options = "--delete-older-than 15d";
-        };
-      };
+  nix = {
+    settings = {
+      experimental-features = [ "nix-command" "flakes" ];
+      auto-optimise-store = true;
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 15d";
+    };
+  };
 
-      networking.networkmanager.enable = true;
+  networking.networkmanager.enable = true;
 
-      system = {
-        #autoUpgrade = {
-        #  enable = true;
-        #  dates = "02:00";
-        #  persistent = true;
-        #  flake = "github:susanthenerd/dotfiles";
-        #  allowReboot = true;
-        #  rebootWindow = {
-        #    lower = "02:00";
-        #    upper = "04:00";
-        #  };
-        #}; 
-        # This value determines the NixOS release from which the default
-        # settings for stateful data, like file locations and database versions
-        # on your system were taken. It's perfectly fine and recommended to leave
-        # this value at the release version of the first install of this system.
-        # Before changing this value read the documentation for this option
-        # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-        stateVersion = "23.05"; # Did you read the comment?
-      }; 
-    }
+  system = {
+    #autoUpgrade = {
+    #  enable = true;
+    #  dates = "02:00";
+    #  persistent = true;
+    #  flake = "github:susanthenerd/dotfiles";
+    #  allowReboot = true;
+    #  rebootWindow = {
+    #    lower = "02:00";
+    #    upper = "04:00";
+    #  };
+    #}; 
+    # This value determines the NixOS release from which the default
+    # settings for stateful data, like file locations and database versions
+    # on your system were taken. It's perfectly fine and recommended to leave
+    # this value at the release version of the first install of this system.
+    # Before changing this value read the documentation for this option
+    # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+    stateVersion = "23.05"; # Did you read the comment?
+  }; 
+}
 #+end_src
 
 ** home.nix
 home-manager configs
 #+begin_src nix :tangle ./hosts/home.nix
-  { config, lib, pkgs, ... }:
-  { 
-    imports =
-    [(import ../modules/programs/emacs)]
-    ++ [(import ../modules/programs/exa)]
-    ++ [(import ../modules/programs/fish)]
-    ++ [(import ../modules/programs/git)]
-    ++ [(import ../modules/programs/mako)]
-    ++ [(import ../modules/programs/starship)];
+{ config, lib, pkgs, ... }:
+{ 
+  imports =
+  [(import ../modules/programs/exa)]
+  ++ [(import ../modules/programs/fish)]
+  ++ [(import ../modules/programs/git)]
+  ++ [(import ../modules/programs/starship)];
 
-    home = {
-      username = "susan";
-      homeDirectory = "/home/susan";
+  home = {
+    username = "susan";
+    homeDirectory = "/home/susan";
 
-      packages = with pkgs; [
-        prismlauncher
-        firefox
-        signal-desktop
-        yubioath-flutter
-        pavucontrol
-        pinentry-curses
-        fuzzel
-        htop
-        gimp
-      ];
-      # pointerCursor = {                         # This will set cursor system-wide so applications can not choose their own
-      #  gtk.enable = true;
-      #  #name = "Dracula-cursors";
-      #  name = "Catppuccin-Mocha-Dark-Cursors";
-      #  #package = pkgs.dracula-theme;
-      #  package = pkgs.catppuccin-cursors.mochaDark;
-      #  size = 16;
-      # };
-      stateVersion = "23.05";
+    packages = with pkgs; [
+      pinentry-curses
+      neofetch
+      htop
+    ];
+    # pointerCursor = {# This will set cursor system-wide so applications can not choose their own
+    #  gtk.enable = true;
+    #  #name = "Dracula-cursors";
+    #  name = "Catppuccin-Mocha-Dark-Cursors";
+    #  #package = pkgs.dracula-theme;
+    #  package = pkgs.catppuccin-cursors.mochaDark;
+    #  size = 16;
+    # };
+    stateVersion = "23.05";
+  };
+
+  programs = {
+    home-manager.enable = true;
+  };
+
+  services = {
+  };
+
+  gtk = {
+    enable = true;
+  #  theme = {
+  #    name = "Gruvbox-Dark";
+  #    package = pkgs.gruvbox-dark-gtk;
+  #  };
+    font = {
+      name = "Fira Sans";
     };
-
-    programs = {
-      home-manager.enable = true;
-      fish.enable = true;
-      neovim.enable = true;
-    };
-
-    services = {
-      kdeconnect = {
-        enable = true;
-        indicator = true;
-      };
-    };
-
-    gtk = {
-      enable = true;
-    #  theme = {
-    #    name = "Gruvbox-Dark";
-    #    package = pkgs.gruvbox-dark-gtk;
-    #  };
-      font = {
-        name = "Fira Sans";
-      };
-    };
-  }
+  };
+}
 #+END_src
 
 ** Framework Laptop
@@ -648,284 +695,290 @@ Segate Firecuda 530 2TB Nvme GEN 4x4
 
 *** default.nix
 #+begin_src nix :tangle ./hosts/framework/default.nix
-  { config, pkgs, lib, ... }:
-  {
-    security.pam.services = {
-      login.u2fAuth = true;
-      sudo.u2fAuth = true;
-    };
+{ config, pkgs, lib, ... }:
+{
+  security.pam.services = {
+    login.u2fAuth = true;
+    sudo.u2fAuth = true;
+  };
   
-    imports = [(import ./hardware-configuration.nix)] ++ [(../../modules/services/syncthing)];
+  imports = [(import ./hardware-configuration.nix)] ++ [(../../modules/services/syncthing)];
   
-    programs = {
-      light.enable = true;
-    };
+  programs = {
+    light.enable = true;
+  };
 
-    networking.hostName = "framework";
-  
-    services = {
-      #tlp.enable = true;                      # TLP and auto-cpufreq for power management
-      auto-cpufreq.enable = true;
-      blueman.enable = true;
-    };
-    xdg.portal = {
-      enable = true;
-      wlr.enable = true;
-    };
-  }
+  networking.hostName = "framework";
+
+  services = {
+    # tlp.enable = true;                      # TLP and auto-cpufreq for power management    
+    auto-cpufreq.enable = true;
+    # blueman.enable = true;
+  };
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+  };
+}
 #+end_src
 
 *** hardware-configuration.nix
 The only special thing here is that I have here configured the file systems
 #+begin_src nix :tangle ./hosts/framework/hardware-configuration.nix
-  { config, lib, pkgs, modulesPath, ... }:
-  {
+{ config, lib, pkgs, modulesPath, ... }:
+{
+  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-    imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
-    ];
-
-    fileSystems = {
-      "/" ={ 
-        device = "/dev/disk/by-uuid/b183e5d3-8679-4e45-88e6-bc1393323dfd";
-        fsType = "btrfs";
-      };
-      "/boot" ={ 
-        device = "/dev/disk/by-uuid/9829-2BBA";
-        fsType = "vfat";
-      };
+  fileSystems = {
+    "/" ={ 
+      device = "/dev/disk/by-uuid/b183e5d3-8679-4e45-88e6-bc1393323dfd";
+      fsType = "btrfs";
     };
+    "/boot" ={ 
+      device = "/dev/disk/by-uuid/9829-2BBA";
+      fsType = "vfat";
+    };
+  };
 
-    boot = {
-      initrd = {
-        availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod" ];
-        kernelModules = [ "dm-snapshot" ];
-        luks.devices."luks" = { 
-          device = "/dev/disk/by-uuid/6c40ab71-86cd-40ff-82f6-0936ad7eb61d";
-          preLVM = true;
-        };
-      };
-      kernelModules = [ "kvm-intel" ];
-      extraModulePackages = [ ];
-      loader = {
-        systemd-boot.enable = true;
-        efi.canTouchEfiVariables = true;
+  boot = {
+    initrd = {
+      availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod" ];
+      kernelModules = [ "dm-snapshot" ];
+      luks.devices."luks" = { 
+        device = "/dev/disk/by-uuid/6c40ab71-86cd-40ff-82f6-0936ad7eb61d";
+        preLVM = true;
       };
     };
-
-    swapDevices =
-      [ { device = "/dev/disk/by-uuid/9a231275-fc03-40c1-8c7b-a14f1592f185"; }
-      ];
-
-    networking.useDHCP = lib.mkDefault true;
-
-    networking.firewall = {
-      enable = true;
-    #  # 1714 to 1764 are used by kdeconnect
-    #  # 21027 and 22000 are used by syncthing
-    #  allowedTCPPorts = [ 22000 ];
-    #  allowedUDPPorts = [ 22000 21027 ];
-    #  allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
-    #  allowedUDPPortRanges = [ { from = 1714; to = 1764; } ];
+    kernelModules = [ "kvm-intel" ];
+    extraModulePackages = [ ];
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
     };
+  };
 
-    nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-    powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-    hardware = {
-      opengl.enable = true;
-      pulseaudio.enable = false;
-      cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-    };
-  }
+  swapDevices = [ { device = "/dev/disk/by-uuid/9a231275-fc03-40c1-8c7b-a14f1592f185"; } ];
+
+  networking.useDHCP = lib.mkDefault true;
+
+  networking.firewall = {
+    enable = true;
+    # 1714 to 1764 are used by kdeconnect
+    # 21027 and 22000 are used by syncthing
+    allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
+    allowedUDPPortRanges = [ { from = 1714; to = 1764; } ];
+  };
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
+  hardware = {
+    opengl.enable = true; 
+    pulseaudio.enable = false;
+    cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  };
+}
 #+end_src
 
 *** home.nix
 Specific home-manager configs for my framework
 #+begin_src nix :tangle ./hosts/framework/home.nix
-  { config, lib, pkgs, ... }:
-  {
-    imports = [(import ../../modules/desktop/sway)]
-    ++ [(import ../../modules/programs/foot)];
-    programs = {
-      obs-studio.enable = true;
-    };
-    xdg.enable = true;
-  }
+{ config, lib, pkgs, ... }:
+{
+  imports = [(import ../../modules/desktop/sway)]
+  ++ [(import ../../modules/programs/emacs)]
+  ++ [(import ../../modules/programs/foot)]
+  ++ [(import ../../modules/programs/mako)];
+  programs = {
+  };
+
+  home.packages = with pkgs; [
+    firefox
+    signal-desktop
+    yubioath-flutter
+    grim
+    slurp
+    pavucontrol
+    qbittorrent
+    fuzzel
+  ];
+  xdg.enable = true;
+}
 #+end_src
 
 * Modules
 ** Desktop
 *** Sway
 #+begin_src nix :tangle ./modules/desktop/sway/default.nix
-  {config, lib, pkgs, ... }:
-  {
-    imports = [(../../programs/i3status-rust)];
-    wayland.windowManager.sway = {
-      enable = true;
-      config = rec {
-        modifier = "Mod4";
-        terminal = "foot";
-        startup = [
-          # Launch Firefox on start
-          {command = "firefox";}
-          {command = "signal-desktop";}
-        ];
-        fonts = {                                                                            
-          names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
-          style = "Regular";
-          size = 11.0;
-        };    
+{config, lib, pkgs, ... }:
+{
+  imports = [(../../programs/i3status-rust)];
+  wayland.windowManager.sway = {
+    enable = true;
+    config = rec {
+      modifier = "Mod4";
+      terminal = "foot";
+      startup = [
+        # Launch Firefox on start
+        {command = "firefox";}
+        {command = "signal-desktop";}
+      ];
+      fonts = {                                                                            
+        names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
+        style = "Regular";
+        size = 11.0;
+      };    
 
-        bars = [
-          {
-            fonts = {
-              names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
-              style = "Regular";
-              size = 11.0;
-            };
-            position = "bottom";
-            statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";
-            # colors={
-            #  separator = "#666666";
-            #  background = "#222222";
-            #  statusline = "#dddddd";
-            #  focusedWorkspace = {
-            #    background = "#0088CC";
-            #    border = "#0088CC";
-            #    text = "#ffffff";
-            #  };
-            #  activeWorkspace = {
-            #    background = "#333333";
-            #    border = "#333333";
-            #    text = "#ffffff";
-            #  };
-            #  inactiveWorkspace = {
-            #   background = "#333333";
-            #   border = "#333333";
-            #   text = "#888888";
-            #  };
-            #  urgentWorkspace = {
-            #    background = "#2f343a";
-            #    border = "#900000";
-            #    text = "#ffffff";
-            #  };
-            #};
-          }
-        ];
-        gaps = {
-          outer = 4;
-          inner = 4;
-          smartBorders = "on";
-        };
-        keybindings = {
-          #Launch stuff
-          "${modifier}+Return" = "exec ${terminal}";
-          "${modifier}+Shift+b" = "exec firefox";
-          "${modifier}+Shift+Return" = "exec fuzzel";
-  
-          # Windows
-          "${modifier}+Shift+c" = "kill";
-
-          # Layouts
-          "${modifier}+b" = "splith";
-          "${modifier}+v" = "splitv";
-
-          # Switch the current container between different layout styles
-          "${modifier}+s" = "layout stacking";
-          "${modifier}+w" = "layout tabbed";
-          "${modifier}+e" = "layout toggle split";
-
-          "${modifier}+f" = "fullscreen";
-
-          # Toggle the current focus between tiling and floating mode
-          "${modifier}+Shift+space" = "floating toggle";
-
-          # Swap focus between the tiling area and the floating area
-          "${modifier}+space" = "focus mode_toggle";
-
-          # Move focus to the parent container
-          "${modifier}+a" = "focus parent";
-  
-          # Workspaces
-          "${modifier}+1" = "workspace number 1";
-          "${modifier}+2" = "workspace number 2";
-          "${modifier}+3" = "workspace number 3";
-          "${modifier}+4" = "workspace number 4";
-          "${modifier}+5" = "workspace number 5";
-          "${modifier}+6" = "workspace number 6";
-          "${modifier}+7" = "workspace number 7";
-          "${modifier}+8" = "workspace number 8";
-          "${modifier}+9" = "workspace number 9";
-
-          "${modifier}+Shift+1" = "move container to workspace number 1";                                                               
-      	  "${modifier}+Shift+2" = "move container to workspace number 2";                                                               
-      	  "${modifier}+Shift+3" = "move container to workspace number 3";                                                               
-   	  "${modifier}+Shift+4" = "move container to workspace number 4";                                                               
-      	  "${modifier}+Shift+5" = "move container to workspace number 5";                                                               
-      	  "${modifier}+Shift+6" = "move container to workspace number 6";                                                               
-      	  "${modifier}+Shift+7" = "move container to workspace number 7";                                                               
-      	  "${modifier}+Shift+8" = "move container to workspace number 8";                                                               
-      	  "${modifier}+Shift+9" = "move container to workspace number 9";
-
-          # Resize
-          "${modifier}+r" = "mode resize";
-  
-          # Other keybindings
-          "${modifier}+Shift+r" = "reload";
-          "${modifier}+Shift+e" = "exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'";
-        };
-        modes = {
-          resize = {
-            "Down" = "resize grow height 10 px";
-            "Escape" = "mode default";
-            "Left" = "resize shrink width 10 px";
-            "Return" = "mode default";
-            "Right" = "resize grow width 10 px";
-            "Up" = "resize shrink height 10 px";
-            "h" = "resize shrink width 10 px";
-            "j" = "resize grow height 10 px";
-            "k" = "resize shrink height 10 px";
-            "l" = "resize grow width 10 px";
+      bars = [
+        {
+          fonts = {
+            names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
+            style = "Regular";
+            size = 11.0;
           };
+          position = "bottom";
+          statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";
+          # colors={
+          #  separator = "#666666";
+          #  background = "#222222";
+          #  statusline = "#dddddd";
+          #  focusedWorkspace = {
+          #    background = "#0088CC";
+          #    border = "#0088CC";
+          #    text = "#ffffff";
+          #  };
+          #  activeWorkspace = {
+          #    background = "#333333";
+          #    border = "#333333";
+          #    text = "#ffffff";
+          #  };
+          #  inactiveWorkspace = {
+          #   background = "#333333";
+          #   border = "#333333";
+          #   text = "#888888";
+          #  };
+          #  urgentWorkspace = {
+          #    background = "#2f343a";
+          #    border = "#900000";
+          #    text = "#ffffff";
+          #  };
+          #};
+        }
+      ];
+      gaps = {
+        outer = 0;
+        inner = 0;
+        # smartBorders = "on";
+      };
+      keybindings = {
+        #Launch stuff
+        "${modifier}+Return" = "exec ${terminal}";
+        "${modifier}+Shift+b" = "exec firefox";
+        "${modifier}+Shift+Return" = "exec fuzzel";
+
+        # Windows
+        "${modifier}+Shift+c" = "kill";
+
+        # Layouts
+        "${modifier}+b" = "splith";
+        "${modifier}+v" = "splitv";
+
+        # Switch the current container between different layout styles
+        "${modifier}+s" = "layout stacking";
+        "${modifier}+w" = "layout tabbed";
+        "${modifier}+e" = "layout toggle split";
+
+        "${modifier}+f" = "fullscreen";
+
+        # Toggle the current focus between tiling and floating mode
+        "${modifier}+Shift+space" = "floating toggle";
+
+        # Swap focus between the tiling area and the floating area
+        "${modifier}+space" = "focus mode_toggle";
+
+        # Move focus to the parent container
+        "${modifier}+a" = "focus parent";
+
+        # Workspaces
+        "${modifier}+1" = "workspace number 1";
+        "${modifier}+2" = "workspace number 2";
+        "${modifier}+3" = "workspace number 3";
+        "${modifier}+4" = "workspace number 4";
+        "${modifier}+5" = "workspace number 5";
+        "${modifier}+6" = "workspace number 6";
+        "${modifier}+7" = "workspace number 7";
+        "${modifier}+8" = "workspace number 8";
+        "${modifier}+9" = "workspace number 9";
+
+        "${modifier}+Shift+1" = "move container to workspace number 1";
+        "${modifier}+Shift+2" = "move container to workspace number 2";
+        "${modifier}+Shift+3" = "move container to workspace number 3";
+        "${modifier}+Shift+4" = "move container to workspace number 4";
+        "${modifier}+Shift+5" = "move container to workspace number 5";
+        "${modifier}+Shift+6" = "move container to workspace number 6";
+        "${modifier}+Shift+7" = "move container to workspace number 7"; 
+        "${modifier}+Shift+8" = "move container to workspace number 8";
+        "${modifier}+Shift+9" = "move container to workspace number 9";
+
+        # Resize
+        "${modifier}+r" = "mode resize";
+
+        # Other keybindings
+        "${modifier}+Shift+r" = "reload";
+        "${modifier}+Shift+e" = "exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'";
+      };
+      modes = {
+        resize = {
+          "Down" = "resize grow height 10 px";
+          "Escape" = "mode default";
+          "Left" = "resize shrink width 10 px";
+          "Return" = "mode default";
+          "Right" = "resize grow width 10 px";
+          "Up" = "resize shrink height 10 px";
+          "h" = "resize shrink width 10 px";
+          "j" = "resize grow height 10 px";
+          "k" = "resize shrink height 10 px";
+          "l" = "resize grow width 10 px";
         };
-  
-        output = {
-          eDP-1 = {
-            scale = "1";
-	  };
-          DP-1 = {
-            scale = "1";
-          };
-	};
+      };
+
+      output = {
+        eDP-1 = {
+          scale = "1";
+        };
+        DP-1 = {
+          scale = "1";
+        };
       };
     };
-  }
+  };
+}
 #+end_src
+
 ** Programs
 *** Emacs
 This is home-manager specific things
 #+begin_src nix :tangle ./modules/programs/emacs/default.nix
-  {config, lib, pkgs, ... }:
-  let  
-    myEmacs = pkgs.emacsWithPackagesFromUsePackage {                                      
-      config = ./config.el;                                                               
-      defaultInitFile = true;
-      alwaysEnsure = true;
-      package = pkgs.emacs-pgtk;                                                          
-    };  
-  in
-  {
-    programs.emacs = {
-      enable = true;
-      package = myEmacs;
-    };
-    services.emacs = {
-      enable = true;
-      package = myEmacs;
-      client.enable = true;
-      defaultEditor = true;
-    };
-  }
+{config, lib, pkgs, ... }:
+let  
+  myEmacs = pkgs.emacsWithPackagesFromUsePackage {                                      
+    config = ./config.el;                                                               
+    defaultInitFile = true;
+    alwaysEnsure = true;
+    package = pkgs.emacs-pgtk;                                                          
+  };  
+in
+{
+  programs.emacs = {
+    enable = true;
+    package = myEmacs;
+  };
+  services.emacs = {
+    enable = true;
+    package = myEmacs;
+    client.enable = true;
+    defaultEditor = true;
+  };
+}
 #+end_src
 *** Exa
 #+begin_src nix :tangle ./modules/programs/exa/default.nix
@@ -1146,3 +1199,4 @@ File sync to my phone
         run: nix flake check
 #+end_src
 
+ 

@@ -2,6 +2,11 @@
 let
   system = "x86_64_linux";
 
+  pkgs = import nixpkgs {
+    inherit system;
+    config.allowUnfree = true;                              # Allow proprietary software
+  };
+
   lib = nixpkgs.lib;
 in
 {
