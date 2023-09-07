@@ -14,6 +14,7 @@
   - [[#consult][Consult]]
   - [[#clang-format][Clang-format]]
   - [[#corfu][Corfu]]
+  - [[#dap-mode][DAP mode]]
   - [[#direnv][direnv]]
   - [[#fonts][Fonts]]
   - [[#gui][GUI]]
@@ -41,32 +42,32 @@
 * flake.nix
 Generate the flake.nix directly from org
 #+begin_src nix :tangle ./flake.nix
+{
+  description = "My personal nixos configuration";
+  
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  
+    emacs-overlay = {
+      url = "github:nix-community/emacs-overlay";
+    };
+  };
+  
+  outputs = inputs @ {self, nixpkgs, home-manager, emacs-overlay, ...} :
   {
-    description = "My personal nixos configuration";
-  
-    inputs = {
-      nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  
-      home-manager = {
-        url = "github:nix-community/home-manager";
-        inputs.nixpkgs.follows = "nixpkgs";
-      };
-  
-      emacs-overlay = {
-        url = "github:nix-community/emacs-overlay";
-      };
-    };
-  
-    outputs = inputs @ {self, nixpkgs, home-manager, emacs-overlay, ...} :
-    {
-      nixosConfigurations = (
-        import ./hosts {
-          inherit (nixpkgs) lib;
-          inherit inputs nixpkgs home-manager emacs-overlay;
-        }
-      );
-    };
-  }
+    nixosConfigurations = (
+      import ./hosts {
+        inherit (nixpkgs) lib;
+        inherit inputs nixpkgs home-manager emacs-overlay;
+      }
+    );
+  };
+}
 #+end_src
 
 * Emacs
@@ -218,13 +219,14 @@ The actual emacs config that is going to be imported by home-manager
 [[https://github.com/minad/corfu][Corfu]] 
 #+begin_src emacs-lisp
 (use-package corfu
+
   ;; Optional customizations
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
-  ;; (corfu-separator ?\s)          ;; Orderless field separator
+  (corfu-separator ?\s)          ;; Orderless field separator
   ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  (corfu-quit-no-match t)
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
   ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
@@ -255,6 +257,11 @@ The actual emacs config that is going to be imported by home-manager
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-ident 'complete))
+#+end_src
+
+** IN-PROGRESS DAP mode
+#+begin_src emacs-lisp
+
 #+end_src
 
 ** direnv
@@ -296,6 +303,27 @@ Defining the various fonts that Emacs will use.
   ;; Uncomment the following line if line spacing needs adjusting.
   (setq-default line-spacing 0.12)
 
+#+end_src
+*** Ligatures
+#+begin_src emacs-lisp
+(use-package ligature
+  :config
+  ;; Enable the www ligature in every possible major mode
+  (ligature-set-ligatures 't '("www"))
+
+  ;; Enable ligatures in programming modes                                                           
+  (ligature-set-ligatures 'prog-mode '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::"
+				       ":::" ":=" "!!" "!=" "!==" "-}" "----" "-->" "->" "->>"
+				       "-<" "-<<" "-~" "#{" "#[" "##" "###" "####" "#(" "#?" "#_"
+				       "#_(" ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*" "/**"
+				       "/=" "/==" "/>" "//" "///" "&&" "||" "||=" "|=" "|>" "^=" "$>"
+				       "++" "+++" "+>" "=:=" "==" "===" "==>" "=>" "=>>" "<="
+				       "=<<" "=/=" ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*"
+				       "<*>" "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--" "<->" "<+"
+				       "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<"
+				       "<~" "<~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
+
+  (global-ligature-mode 't))
 #+end_src
 
 ** GUI
@@ -513,54 +541,48 @@ Org-bullets gives us attractive bullets rather than asterisks.
 General configurations that used on all hosts + folders for host specific
 ** default.nix
 #+begin_src nix :tangle ./hosts/default.nix
-  { lib, inputs, nixpkgs, home-manager, emacs-overlay, ... }:
-  let
-    system = "x86_64_linux";
+{ lib, inputs, nixpkgs, home-manager, emacs-overlay, ... }:
+let
+  system = "x86_64_linux";
 
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;                              # Allow proprietary software
-    };
+  pkgs = import nixpkgs {
+    inherit system;
+    config.allowUnfree = true;
+  };
 
-    lib = nixpkgs.lib;
-  in
-  {
-    framework = lib.nixosSystem {
-      inherit system;
+  lib = nixpkgs.lib;
+in
+{
+  framework = lib.nixosSystem {
+    inherit system;
 
-      modules = [
-        { nixpkgs = {
-            overlays = [
-              emacs-overlay.overlay
-            ];
-           config.allowUnfree = true;
-          };
-        }
-        {
-          nix.settings = {
-            substituters = [
-              "https://nix-community.cachix.org"
-            ];
-            trusted-public-keys = [
-              "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-            ];
-          };
-        }
+    modules = [
+      { nixpkgs = {
+          overlays = [ emacs-overlay.overlay ];
+          config.allowUnfree = true;
+        };
 
-        ./framework
-        ./configuration.nix
+        nix.settings = {
+          substituters = [ "https://nix-community.cachix.org" ];
+          trusted-public-keys = [     
+            "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
+        };
+      }
 
-        home-manager.nixosModules.home-manager {
-          home-manager.useUserPackages = true;
-          home-manager.useGlobalPkgs = true;
+      ./framework
+      ./configuration.nix
 
-          home-manager.users.susan = {
-            imports = [(import ./home.nix)] ++ [(import ./framework/home.nix)];
-          };
-        } 
-      ];
-    };
-  } 
+      home-manager.nixosModules.home-manager {
+        home-manager.useUserPackages = true;
+        home-manager.useGlobalPkgs = true;
+
+        home-manager.users.susan = {
+          imports = [(import ./home.nix)] ++ [(import ./framework/home.nix)];
+        };
+      } 
+    ];
+  };
+} 
 #+end_src
 
 ** configuration.nix
@@ -998,32 +1020,31 @@ in
   };
 }
 #+end_src
+
 *** Exa
 #+begin_src nix :tangle ./modules/programs/exa/default.nix
-  {config, lib, pkgs, ... }:
-  {
-    programs.exa = {
-      enable = true;
-      git = true;
-      icons = true;
-      enableAliases = true;
-    };
-  }
+{config, lib, pkgs, ... }:
+{
+  programs.exa = {
+    enable = true;
+    git = true;
+    icons = true;
+    enableAliases = true;
+  };
+}
 #+end_src
+
 *** Fish
 #+begin_src nix :tangle ./modules/programs/fish/default.nix
-  {config, lib, pkgs, ...}:
-  {
-    programs.fish = {
-      enable = true;
-      shellAliases = {
-        "rebuild" = "sudo nixos-rebuild switch --flake .";
-        "flake-check" = "nix flake check";
-      };
-      shellInit = "set -g fish_greeting";
-    };
-  }
+{config, lib, pkgs, ...}:
+{
+  programs.fish = {
+    enable = true;
+    shellInit = "set -g fish_greeting";
+  };
+}
 #+end_src
+
 *** Foot
 #+begin_src nix :tangle ./modules/programs/foot/default.nix
   {config, lib, pkgs, ...}:
@@ -1061,104 +1082,102 @@ in
 #+end_src
 *** Git
 #+begin_src nix :tangle ./modules/programs/git/default.nix
-  {config, lib, pkgs, ... }:
-  {
-    programs.git = {
-      enable = true;
-      userName = "Susan";
-      userEmail = "susan@susan.lol";
-    };
-  }
+{config, lib, pkgs, ... }:
+{
+  programs.git = {
+    enable = true;
+    userName = "Susan";
+    userEmail = "susan@susan.lol";
+  };
+}
 #+end_src
 *** i3Status-rust
 #+begin_src nix :tangle ./modules/programs/i3status-rust/default.nix
-  {config, lib, pkgs, ... }:
-  {
-    programs.i3status-rust = {
-      enable = true;
-      bars = {
-        default = {
-          theme = "gruvbox-dark";
-          icons = "awesome6";
-          blocks = [
-            {
-              block = "memory";
-              format = " $icon $mem_used_percents ";
-              format_alt = " $icon SWAP $swap_used_percents ";
-            }
-            {
-              block = "cpu";
-              interval = 1;
-            }
-            {
-              block = "load";
-              format = " $icon $1m ";
-              interval = 1;
-            }
-            {
-              block = "sound";
-            }
-            {
-              block = "backlight";
-            }
-            {
-              block = "time";
-              format = " $timestamp.datetime(f:'%a %d/%m %R') ";
-              interval = 60;
-            }
-          ];
-        };
+{config, lib, pkgs, ... }:
+{
+  programs.i3status-rust = {
+    enable = true;
+    bars = {
+      default = {
+        theme = "gruvbox-dark";
+        icons = "awesome6";
+        blocks = [
+          {
+            block = "memory";
+            format = " $icon $mem_used_percents ";
+            format_alt = " $icon SWAP $swap_used_percents ";
+          }
+          {
+            block = "cpu";
+            interval = 1;
+          }
+          {
+            block = "load";
+            format = " $icon $1m ";
+            interval = 1;
+          }
+          {
+            block = "sound";
+          }
+          {
+            block = "backlight";
+          }
+          {
+            block = "time";
+            format = " $timestamp.datetime(f:'%a %d/%m %R') ";
+            interval = 60;
+          }
+        ];
       };
     };
-  }
+  };
+}
 #+end_src
 
 *** Mako
 #+begin_src nix :tangle ./modules/programs/mako/default.nix
-  {config, pkgs, lib, ... }:
-  {
-    services.mako = {
-      enable = true;
-      font = "FiraCode Nerd Font Mono Medium 13";
-    };
-  }
+{config, pkgs, lib, ... }:
+{
+  services.mako = {
+    enable = true;
+    font = "FiraCode Nerd Font Mono Medium 13";
+  };
+}
 #+end_src
 
 *** Starship
 #+begin_src nix :tangle ./modules/programs/starship/default.nix
-  {config, lib, pkgs, ... }:
-  {
-    programs.starship = {
-      enable = true;
-      # Configuration written to ~/.config/starship.toml
-      settings = {
-        # add_newline = false;
+{config, lib, pkgs, ... }:
+{
+  programs.starship = {
+    enable = true;
+    settings = {
+      add_newline = false;
   
-        # character = {
-        #   success_symbol = "[➜](bold green)";
-        #   error_symbol = "[➜](bold red)";
-        # };
-  
-        # package.disabled = true;
+      character = {
+        success_symbol = "[➜](bold green)";
+        error_symbol = "[➜](bold red)";
       };
     };
-  }
+  };
+}
 #+end_src
+
 ** Services
 All services configured on my laptop and servers(that are not used for desktop pruposes)
 *** Syncthing
 File sync to my phone
 #+begin_src nix :tangle ./modules/services/syncthing/default.nix
-  {config, pkgs, lib, ... }:
-  { 
-    services.syncthing = {
-      enable = true;
-      openDefaultPorts = true;
-      user = "susan";
-      dataDir = "/home/susan/phone/";
-      configDir = "/home/susan/.config/syncthing"; # I don't have any special configurations, but I'm letting this option here in case I forget about it 
-    };
-  }
+{config, pkgs, lib, ... }:
+{ 
+  services.syncthing = {
+    enable = true;
+    openDefaultPorts = true;
+    user = "susan";
+    dataDir = "/home/susan/phone/";
+    configDir = "/home/susan/.config/syncthing"; # I don't have any special configurations, but I'm letting this option here in case I forget about it 
+  };
+}
 #+end_src
 
 * Github Actions
