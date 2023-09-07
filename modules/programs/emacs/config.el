@@ -164,11 +164,20 @@
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-ident 'complete))
 
-
+(use-package dap-mode
+  :after lsp-mode
+  :config
+  (require 'dap-lldb)
+  (dap-mode t)
+  (dap-ui-mode t))
 
 (use-package direnv
  :config
  (direnv-mode))
+
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
 
 (set-face-attribute 'default nil
   :font "FiraCode Nerd Font Mono"
@@ -219,7 +228,7 @@
 
 (setq-default cursor-type 'bar)
 
-(setq make-pointer-invisible nil)
+(setq make-pointer-invisible t)
 
 (use-package gruvbox-theme
   :config
@@ -236,16 +245,15 @@
 (use-package lsp-mode
   :ensure t
   :custom
-  (lsp-completion-provider :none)  ;; disable built-in completion, using Corfu
+  (lsp-completion-provider :none)  ;; disable built-in completion so we can use Corfu
   :init
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
           '(orderless)))  ;; configure flex completion
   :hook ((lsp-mode . lsp-enable-which-key-integration)
          (lsp-completion-mode . my/lsp-mode-setup-completion)
-         (c++-mode . lsp-deferred)))  ;; enable lsp-mode for C++
+         (c++-mode . lsp-deferred)))  ;; enable lsp-mode for c++
 
-;; Optional: lsp-ui for better UI (but can be omitted)
 (use-package lsp-ui
   :ensure t
   :hook (lsp-mode . lsp-ui-mode))
@@ -264,11 +272,11 @@
 :mode ("\\.nix\\'"))
 
 (use-package orderless
-:init
-;; Configure a custom style dispatcher (see the Consult wiki)
-;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
-;;       orderless-component-separator #'orderless-escapable-split-on-space)
-(setq completion-styles '(orderless basic)
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space) 
+  (setq completion-styles '(orderless basic)
       completion-category-defaults nil
       completion-category-overrides '((file (styles partial-completion)))))
 
@@ -298,6 +306,20 @@
       '((sequence "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i)" "BLOCKED(b)"  "|" "DONE(d)" "WONT-DO(!)" )))
 
 (setq org-agenda-files '("~/org"))
+
+(use-package projectile
+ :ensure t  ; Ensure the package is installed if not already
+ :init
+ (projectile-mode 1) ; Enable projectile globally
+ :config
+ ;; Other configurations
+ (setq projectile-project-root-files-top-down-recurring
+       (append '(".projectile")
+               projectile-project-root-files-top-down-recurring))
+
+ ;; If you use a global prefix for Projectile commands (optional)
+ (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+ )
 
 (use-package vertico
   :init

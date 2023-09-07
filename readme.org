@@ -16,14 +16,15 @@
   - [[#corfu][Corfu]]
   - [[#dap-mode][DAP mode]]
   - [[#direnv][direnv]]
+  - [[#flycheck][Flycheck]]
   - [[#fonts][Fonts]]
   - [[#gui][GUI]]
-  - [[#display-line-numbers-and-truncated-lines][Display Line Numbers and Truncated Lines]]
   - [[#lsp-mode][LSP mode]]
   - [[#marginalia][Marginalia]]
   - [[#nix-mode][Nix Mode]]
   - [[#orderless][Orderless]]
   - [[#org-mode][Org Mode]]
+  - [[#projectile][Projectile]]
   - [[#vertico][Vertico]]
   - [[#which-key][Which-key]]
 - [[#hosts][Hosts]]
@@ -261,7 +262,12 @@ The actual emacs config that is going to be imported by home-manager
 
 ** IN-PROGRESS DAP mode
 #+begin_src emacs-lisp
-
+(use-package dap-mode
+  :after lsp-mode
+  :config
+  (require 'dap-lldb)
+  (dap-mode t)
+  (dap-ui-mode t))
 #+end_src
 
 ** direnv
@@ -269,6 +275,13 @@ The actual emacs config that is going to be imported by home-manager
 (use-package direnv
  :config
  (direnv-mode))
+#+end_src
+
+** Flycheck
+#+begin_src emacs-lisp
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
 #+end_src
 
 ** Fonts
@@ -304,6 +317,7 @@ Defining the various fonts that Emacs will use.
   (setq-default line-spacing 0.12)
 
 #+end_src
+
 *** Ligatures
 #+begin_src emacs-lisp
 (use-package ligature
@@ -335,7 +349,7 @@ Defining the various fonts that Emacs will use.
 *** Pointer
 I don't use the pointer so lets hide it
 #+begin_src emacs-lisp
-(setq make-pointer-invisible nil)
+(setq make-pointer-invisible t)
 #+end_src
 
 *** Theme
@@ -353,7 +367,7 @@ I don't use the pointer so lets hide it
 (scroll-bar-mode -1)
 #+end_src
 
-** Display Line Numbers and Truncated Lines
+*** Display Line Numbers and Truncated Lines
 #+begin_src emacs-lisp
 (global-display-line-numbers-mode 1)
 (global-visual-line-mode t)
@@ -364,16 +378,15 @@ I don't use the pointer so lets hide it
 (use-package lsp-mode
   :ensure t
   :custom
-  (lsp-completion-provider :none)  ;; disable built-in completion, using Corfu
+  (lsp-completion-provider :none)  ;; disable built-in completion so we can use Corfu
   :init
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
           '(orderless)))  ;; configure flex completion
   :hook ((lsp-mode . lsp-enable-which-key-integration)
          (lsp-completion-mode . my/lsp-mode-setup-completion)
-         (c++-mode . lsp-deferred)))  ;; enable lsp-mode for C++
+         (c++-mode . lsp-deferred)))  ;; enable lsp-mode for c++
 
-;; Optional: lsp-ui for better UI (but can be omitted)
 (use-package lsp-ui
   :ensure t
   :hook (lsp-mode . lsp-ui-mode))
@@ -383,7 +396,6 @@ I don't use the pointer so lets hide it
 ** Marginalia
 [[https://github.com/minad/marginalia][Marginalia]] provides rich annotations
 #+begin_src emacs-lisp
-
 (use-package marginalia
   ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
   ;; available in the *Completions* buffer, add it to the
@@ -397,20 +409,20 @@ I don't use the pointer so lets hide it
 
 ** Nix Mode
 #+begin_src emacs-lisp
-  (use-package nix-mode
-  :mode ("\\.nix\\'"))
+(use-package nix-mode
+:mode ("\\.nix\\'"))
 #+end_src
 
 ** Orderless
 #+begin_src emacs-lisp
-  (use-package orderless
+(use-package orderless
   :init
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
-  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space) 
   (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+      completion-category-defaults nil
+      completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 
 ** IN-PROGRESS Org Mode
@@ -465,6 +477,23 @@ Org-bullets gives us attractive bullets rather than asterisks.
 
 **** TODO Org super agenda
 *** IN-PROGRESS Add org capture
+** Projectile
+#+begin_src emacs-lisp
+ (use-package projectile
+  :ensure t  ; Ensure the package is installed if not already
+  :init
+  (projectile-mode 1) ; Enable projectile globally
+  :config
+  ;; Other configurations
+  (setq projectile-project-root-files-top-down-recurring
+        (append '(".projectile")
+                projectile-project-root-files-top-down-recurring))
+
+  ;; If you use a global prefix for Projectile commands (optional)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  )
+#+end_src
+
 ** Vertico
 [[https://github.com/minad/vertico][Vertico]] provides a performant and minimalistic vertical completion UI based on the default completion system.
 #+begin_src emacs-lisp
@@ -826,7 +855,6 @@ Specific home-manager configs for my framework
   };
 
   home.packages = with pkgs; [
-    jetbrains.clion
     firefox
     signal-desktop
     yubioath-flutter
@@ -1038,9 +1066,21 @@ in
 #+begin_src nix :tangle ./modules/programs/fish/default.nix
 {config, lib, pkgs, ...}:
 {
+  imports = [(../fzf)];
+  
   programs.fish = {
     enable = true;
     shellInit = "set -g fish_greeting";
+  };
+}
+#+end_src
+
+*** FZF
+#+begin_src nix :tangle ./modules/programs/fzf/default.nix
+{config, lib, pkgs, ...}:
+{
+  programs.fzf = {
+    enable = true;
   };
 }
 #+end_src
