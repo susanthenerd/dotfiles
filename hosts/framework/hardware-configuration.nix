@@ -4,11 +4,19 @@
 
   fileSystems = {
     "/" ={ 
-      device = "/dev/disk/by-uuid/b183e5d3-8679-4e45-88e6-bc1393323dfd";
+      device = "/dev/disk/by-uuid/d71bf142-e8b1-4dbe-a5ba-ed99a4a3320b";
+      fsType = "btrfs";
+    };
+    "/data" ={ 
+      device = "/dev/disk/by-uuid/d4e49e77-74eb-4acb-b52c-144d6bc4fa06";
+      fsType = "btrfs";
+    };
+    "/home" ={ 
+      device = "/dev/disk/by-uuid/8b84cc95-9f12-4cd6-9504-81ac42471119";
       fsType = "btrfs";
     };
     "/boot" ={ 
-      device = "/dev/disk/by-uuid/9829-2BBA";
+      device = "/dev/disk/by-uuid/D13E-83BD";
       fsType = "vfat";
     };
   };
@@ -18,7 +26,7 @@
       availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod" ];
       kernelModules = [ "dm-snapshot" ];
       luks.devices."luks" = { 
-        device = "/dev/disk/by-uuid/6c40ab71-86cd-40ff-82f6-0936ad7eb61d";
+        device = "/dev/disk/by-uuid/2de82026-9bbe-4ef6-bea7-7b163c0345e6";
         preLVM = true;
       };
     };
@@ -30,7 +38,7 @@
     };
   };
 
-  swapDevices = [ { device = "/dev/disk/by-uuid/9a231275-fc03-40c1-8c7b-a14f1592f185"; } ];
+  swapDevices = [ { device = "/dev/disk/by-uuid/aa146de9-d8c4-4473-9b5b-a8ba28676184"; } ];
 
   networking.useDHCP = lib.mkDefault true;
 
