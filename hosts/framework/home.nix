@@ -8,6 +8,8 @@
   };
 
   home.packages = with pkgs; [
+    jetbrains.clion
+    android-studio
     firefox
     signal-desktop
     yubioath-flutter

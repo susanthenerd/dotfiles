@@ -15,10 +15,10 @@
         names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
         style = "Regular";
         size = 11.0;
-      };    
-
+      };
       bars = [
         {
+          mode = "hide";
           fonts = {
             names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
             style = "Regular";
@@ -108,10 +108,9 @@
         "${modifier}+Shift+8" = "move container to workspace number 8";
         "${modifier}+Shift+9" = "move container to workspace number 9";
 
-
-        "Print" = "exec grim -q 100 ~/Pictures/screenshot-$(date +'%Y-%m-%d-%H-%M-%S' ).png";
-        "${modifier}+Print" = "exec slurp | grim -g - -q 100 ~/Pictures/screenshot-$(date +'%Y-%m-%d-%H-%M-%S' ).png";
-
+        # Screenshot
+        "Print" = "exec grim ~/Pictures/screenshot-$(date +'%Y-%m-%d-%H-%M-%S' ).png";
+        "${modifier}+Print" = "exec slurp | grim -g - ~/Pictures/screenshot-slurp-$(date +'%Y-%m-%d-%H-%M-%S' ).png";
 
         # Resize
         "${modifier}+r" = "mode resize";
@@ -143,6 +142,11 @@
           scale = "1";
         };
       };
+      window = {
+        border = 0;
+        titlebar = false;
+      };
+      workspaceAutoBackAndForth = true;
     };
   };
 }

@@ -1,10 +1,15 @@
 { config, pkgs, lib, ... }:
 {
-  security.pam.services = {
-    login.u2fAuth = true;
-    sudo.u2fAuth = true;
+  security.pam = {
+    u2f = {
+      control = "requisite";
+      cue = true;
+    };
+    services = {
+      login.u2fAuth = true;
+      sudo.u2fAuth = true;
+    };
   };
-  
   imports = [(import ./hardware-configuration.nix)] ++ [(../../modules/services/syncthing)];
   
   programs = {

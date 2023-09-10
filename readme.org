@@ -431,6 +431,7 @@ I don't use the pointer so lets hide it
 (electric-indent-mode -1)
 (setq org-edit-src-content-indentation 0)
 #+end_src
+
 *** Asociate all org files with org mode
 #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
@@ -470,6 +471,13 @@ Org-bullets gives us attractive bullets rather than asterisks.
       '((sequence "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i)" "BLOCKED(b)"  "|" "DONE(d)" "WONT-DO(!)" )))
 #+end_src
 
+*** Make meta lines smaller
+#+begin_src emacs-lisp
+(custom-set-faces
+ '(org-todo ((t (:inherit font-lock-keyword-face :weight bold :height 0.8))))
+ '(org-done ((t (:inherit font-lock-keyword-face :weight bold :height 0.8)))))
+#+end_src
+
 *** Org Agenda
 #+begin_src emacs-lisp
 (setq org-agenda-files '("~/org"))
@@ -477,6 +485,9 @@ Org-bullets gives us attractive bullets rather than asterisks.
 
 **** TODO Org super agenda
 *** IN-PROGRESS Add org capture
+#+begin_src emacs-lisp
+
+#+end_src
 ** Projectile
 #+begin_src emacs-lisp
  (use-package projectile
@@ -490,8 +501,7 @@ Org-bullets gives us attractive bullets rather than asterisks.
                 projectile-project-root-files-top-down-recurring))
 
   ;; If you use a global prefix for Projectile commands (optional)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  )
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 #+end_src
 
 ** Vertico
@@ -760,11 +770,16 @@ Segate Firecuda 530 2TB Nvme GEN 4x4
 #+begin_src nix :tangle ./hosts/framework/default.nix
 { config, pkgs, lib, ... }:
 {
-  security.pam.services = {
-    login.u2fAuth = true;
-    sudo.u2fAuth = true;
+  security.pam = {
+    u2f = {
+      control = "requisite";
+      cue = true;
+    };
+    services = {
+      login.u2fAuth = true;
+      sudo.u2fAuth = true;
+    };
   };
-  
   imports = [(import ./hardware-configuration.nix)] ++ [(../../modules/services/syncthing)];
   
   programs = {
@@ -863,6 +878,8 @@ Specific home-manager configs for my framework
   };
 
   home.packages = with pkgs; [
+    jetbrains.clion
+    android-studio
     firefox
     signal-desktop
     yubioath-flutter
@@ -897,10 +914,10 @@ Specific home-manager configs for my framework
         names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
         style = "Regular";
         size = 11.0;
-      };    
-
+      };
       bars = [
         {
+          mode = "hide";
           fonts = {
             names = [ "FiraCode Nerd Font Mono" "FontAwesome"];
             style = "Regular";
@@ -990,10 +1007,9 @@ Specific home-manager configs for my framework
         "${modifier}+Shift+8" = "move container to workspace number 8";
         "${modifier}+Shift+9" = "move container to workspace number 9";
 
-
-        "Print" = "exec grim -q 100 ~/Pictures/screenshot-$(date +'%Y-%m-%d-%H-%M-%S' ).png";
-        "${modifier}+Print" = "exec slurp | grim -g - -q 100 ~/Pictures/screenshot-$(date +'%Y-%m-%d-%H-%M-%S' ).png";
-
+        # Screenshot
+        "Print" = "exec grim ~/Pictures/screenshot-$(date +'%Y-%m-%d-%H-%M-%S' ).png";
+        "${modifier}+Print" = "exec slurp | grim -g - ~/Pictures/screenshot-slurp-$(date +'%Y-%m-%d-%H-%M-%S' ).png";
 
         # Resize
         "${modifier}+r" = "mode resize";
@@ -1025,6 +1041,11 @@ Specific home-manager configs for my framework
           scale = "1";
         };
       };
+      window = {
+        border = 0;
+        titlebar = false;
+      };
+      workspaceAutoBackAndForth = true;
     };
   };
 }
@@ -1040,14 +1061,14 @@ let
     config = ./config.el;                                                               
     defaultInitFile = true;
     alwaysEnsure = true;
-    package = pkgs.emacs-pgtk;                                                          
+    package = pkgs.emacs29-pgtk;                                                          
   };  
 in
 {
-  programs.emacs = {
-    enable = true;
-    package = myEmacs;
-  };
+  # programs.emacs = {
+  #  enable = true;
+  #  package = myEmacs;
+  # };
   services.emacs = {
     enable = true;
     package = myEmacs;
@@ -1061,7 +1082,7 @@ in
 #+begin_src nix :tangle ./modules/programs/exa/default.nix
 {config, lib, pkgs, ... }:
 {
-  programs.exa = {
+  programs.eza = {
     enable = true;
     git = true;
     icons = true;
@@ -1128,6 +1149,7 @@ in
     };
   }
 #+end_src
+
 *** Git
 #+begin_src nix :tangle ./modules/programs/git/default.nix
 {config, lib, pkgs, ... }:
@@ -1139,6 +1161,7 @@ in
   };
 }
 #+end_src
+
 *** i3Status-rust
 #+begin_src nix :tangle ./modules/programs/i3status-rust/default.nix
 {config, lib, pkgs, ... }:
@@ -1163,6 +1186,16 @@ in
             block = "load";
             format = " $icon $1m ";
             interval = 1;
+          }
+          {
+            block = "battery";
+            format = " $icon $percentage $time $power ";
+            interval = 5;
+          }
+          {
+            block = "net";
+            format = " $icon ^icon_net_down $speed_down.eng(prefix:M) ^icon_net_up $speed_up.eng(prefix:M) ";
+            format_alt = " $icon {$signal_strength $ssid $frequency|Wired connection} $ip ";
           }
           {
             block = "sound";
@@ -1219,11 +1252,11 @@ File sync to my phone
 {config, pkgs, lib, ... }:
 { 
   services.syncthing = {
-    enable = true;
+    enable = false;
     openDefaultPorts = true;
     user = "susan";
-    dataDir = "/home/susan/phone/";
-    configDir = "/home/susan/.config/syncthing"; # I don't have any special configurations, but I'm letting this option here in case I forget about it 
+    dataDir = "/data/syncthing";
+    configDir = "/data/.config/syncthing"; # I don't have any special configurations, but I'm letting this option here in case I forget about it 
   };
 }
 #+end_src

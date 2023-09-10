@@ -305,7 +305,13 @@
 (setq org-todo-keywords
       '((sequence "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i)" "BLOCKED(b)"  "|" "DONE(d)" "WONT-DO(!)" )))
 
+(custom-set-faces
+ '(org-todo ((t (:inherit font-lock-keyword-face :weight bold :height 0.8))))
+ '(org-done ((t (:inherit font-lock-keyword-face :weight bold :height 0.8)))))
+
 (setq org-agenda-files '("~/org"))
+
+
 
 (use-package projectile
  :ensure t  ; Ensure the package is installed if not already
@@ -318,8 +324,7 @@
                projectile-project-root-files-top-down-recurring))
 
  ;; If you use a global prefix for Projectile commands (optional)
- (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
- )
+ (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
 (use-package vertico
   :init
